@@ -3,6 +3,7 @@ package com.jyn.subsectionseekbar;
 import android.animation.TypeEvaluator;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -38,7 +39,7 @@ public class SubsectionSeekBar extends View {
     /**
      * bar 背景色
      */
-    private int progressBarColor;
+    private int backgroundColor;
 
     /**
      * bar 进度条颜色
@@ -55,6 +56,11 @@ public class SubsectionSeekBar extends View {
      */
     private List<SeekBarBean> seekBarBeans;
 
+    /**
+     * 进度条高度比例
+     * 进度条高度 = 控件高度/ratio
+     */
+    private int ratio;
     /**
      * 当前进度百分比
      */
@@ -110,14 +116,16 @@ public class SubsectionSeekBar extends View {
         super(context);
     }
 
+    @SuppressLint("Recycle")
     public SubsectionSeekBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.mContext = context;
-        init();
-    }
-
-    private void init() {
-
+        TypedArray t = context.obtainStyledAttributes(attrs, R.styleable.SubsectionSeekBar);
+        mMax = t.getInt(R.styleable.SubsectionSeekBar_max, 1000);
+        backgroundColor = t.getColor(R.styleable.SubsectionSeekBar_backgroundColor, Color.parseColor("#d9d9d9"));
+        progressColor = t.getColor(R.styleable.SubsectionSeekBar_progressColor, Color.parseColor("#00B6D0"));
+        secondaryProgressColor = t.getColor(R.styleable.SubsectionSeekBar_secondaryProgressColor, Color.parseColor("#98F5FF"));
+        ratio = t.getInteger(R.styleable.SubsectionSeekBar_ratio, 4);
     }
 
     /**
@@ -150,8 +158,9 @@ public class SubsectionSeekBar extends View {
         invalidate();
     }
 
-    public void setProgressBarColor(int progressBarColor) {
-        this.progressBarColor = progressBarColor;
+    @Override
+    public void setBackgroundColor(int backgroundColor) {
+        this.backgroundColor = backgroundColor;
     }
 
     public void setProgressColor(int progressColor) {
@@ -196,6 +205,7 @@ public class SubsectionSeekBar extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        Log.i("main", "h:" + h);
         int seekBarRadius = h / 2;
         /*
          * 属性 left right top bottom 描述了SeekBar按钮的位置
@@ -204,8 +214,8 @@ public class SubsectionSeekBar extends View {
          */
         lineLeft = seekBarRadius;
         lineRight = w - seekBarRadius;
-        lineTop = seekBarRadius - seekBarRadius / 4;
-        lineBottom = seekBarRadius + seekBarRadius / 4;
+        lineTop = seekBarRadius - seekBarRadius / ratio;
+        lineBottom = seekBarRadius + seekBarRadius / ratio;
 
         lineWidth = lineRight - lineLeft;
         //左上右下
@@ -248,6 +258,12 @@ public class SubsectionSeekBar extends View {
         canvas.drawRoundRect(line, lineCorners, lineCorners, mBackgroundPaint);
     }
 
+    /**
+     * 绘制分段背景
+     *
+     * @param canvas      画布
+     * @param seekBarBean 分段背景bean类
+     */
     private void drawSubsectionBean(Canvas canvas, SeekBarBean seekBarBean) {
         //起点
         int origin = seekBarBean.getOrigin();
@@ -521,5 +537,22 @@ public class SubsectionSeekBar extends View {
          * @param view 本view
          */
         void onStopTrackingTouch(View view);
+    }
+
+
+    /**
+     * 根据手机的分辨率从 dip 的单位 转成为 px(像素)
+     */
+    public static int dip2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+
+    /**
+     * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
+     */
+    public static int px2dip(Context context, float pxValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (pxValue / scale + 0.5f);
     }
 }
