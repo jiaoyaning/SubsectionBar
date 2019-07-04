@@ -25,7 +25,8 @@ public class MainActivity extends AppCompatActivity {
         subsectionpb.setMaxProgress(100);
         RangeSeekBar rangeSeekBar = findViewById(R.id.range_seek_bar);
         final TextView seekbarTx = findViewById(R.id.seekbar_tx);
-        rangeSeekBar.setProgress(50);
+        rangeSeekBar.setProgress(500);
+        rangeSeekBar.setSecondaryProgress(700);
         rangeSeekBar.setOnSubsectionSeekBarChangeListener(new RangeSeekBar.onSubsectionSeekBarChangeListener() {
             @SuppressLint("SetTextI18n")
             @Override

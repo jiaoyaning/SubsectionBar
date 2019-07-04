@@ -35,9 +35,15 @@ public class RangeSeekBar extends View {
     private int mProgress = 0;
 
     /**
+     * 第二条进度条值
+     */
+    private int mSecondaryProgress = 0;
+
+    /**
      * 当前进度百分比
      */
     private float percent;
+
     /**
      * 背景色画笔
      */
@@ -57,13 +63,18 @@ public class RangeSeekBar extends View {
     /**
      * 已走完进度背景色
      */
-    private RectF seekLine = new RectF();
+    private RectF progressLine = new RectF();
+    /**
+     * 第二进度颜色
+     */
+    private RectF secondaryProgressLine = new RectF();
 
     /**
      * SubsectionSeekBar 监听
      */
     private onSubsectionSeekBarChangeListener onSubsectionSeekBarChangeListener;
 
+    //===============参数方法分割线=============================================================
 
     public RangeSeekBar(Context context) {
         super(context);
@@ -94,6 +105,17 @@ public class RangeSeekBar extends View {
         updateSeekBar(percent);
     }
 
+
+    /**
+     * 设置第二进度
+     *
+     * @param secondaryProgress 第二进度
+     */
+    public void setSecondaryProgress(int secondaryProgress) {
+        this.mSecondaryProgress = secondaryProgress;
+        invalidate();
+    }
+
     /**
      * 设置监听
      *
@@ -103,6 +125,7 @@ public class RangeSeekBar extends View {
         this.onSubsectionSeekBarChangeListener = onSubsectionSeekBarChangeListener;
     }
 
+    //================测量绘制Touch时间分割线==============================================
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
@@ -147,24 +170,51 @@ public class RangeSeekBar extends View {
         super.onDraw(canvas);
         mBackgroundPaint.setStyle(Paint.Style.FILL);
         mBackgroundPaint.setAntiAlias(true);
-//        paint.setColor(0xFFD7D7D7);
+        drawBackground(canvas);
+        drawSecondaryProgress(canvas);
+        drawProgress(canvas);
+        // 绘制按钮
+        seekBar.draw(canvas);
+    }
+
+    /**
+     * 绘制背景
+     *
+     * @param canvas
+     */
+    private void drawBackground(Canvas canvas) {
         mBackgroundPaint.setColor(Color.parseColor("#d9d9d9"));
         /*
          * rect：RectF对象。
          * rx：x方向上的圆角半径。
          * ry：y方向上的圆角半径。
          * paint：绘制时所使用的画笔。
-         * 绘制背景图
          */
         canvas.drawRoundRect(line, lineCorners, lineCorners, mBackgroundPaint);
-        //绘制已走过进度的颜色
-        int seekLineWidth = (int) (lineWidth * percent);
+    }
 
-        seekLine.set(lineLeft, lineTop, seekLineWidth + lineLeft, lineBottom);
-        mBackgroundPaint.setColor(Color.parseColor("#0198AE"));
-        canvas.drawRoundRect(seekLine, lineCorners, lineCorners, mBackgroundPaint);
-        // 绘制按钮图
-        seekBar.draw(canvas);
+    /**
+     * 绘制已走过进度的颜色
+     *
+     * @param canvas
+     */
+    private void drawProgress(Canvas canvas) {
+        int progressLineWidth = (int) (lineWidth * percent);
+        progressLine.set(lineLeft, lineTop, progressLineWidth + lineLeft, lineBottom);
+        mBackgroundPaint.setColor(Color.parseColor("#53868B"));
+        canvas.drawRoundRect(progressLine, lineCorners, lineCorners, mBackgroundPaint);
+    }
+
+    /**
+     * 绘制第二条进度条的颜色
+     *
+     * @param canvas
+     */
+    private void drawSecondaryProgress(Canvas canvas) {
+        mBackgroundPaint.setColor(Color.parseColor("#98F5FF"));
+        int secondaryprogressLineWidth = (int) (mSecondaryProgress * 1f / mMax * lineWidth);
+        secondaryProgressLine.set(lineLeft, lineTop, secondaryprogressLineWidth + lineLeft, lineBottom);
+        canvas.drawRoundRect(secondaryProgressLine, lineCorners, lineCorners, mBackgroundPaint);
     }
 
     /**
