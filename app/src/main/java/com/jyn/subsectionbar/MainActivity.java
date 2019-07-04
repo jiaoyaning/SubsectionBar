@@ -9,7 +9,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.jyn.subsectionprogressbar.SubsectionProgressBar;
+import com.jyn.subsectionseekbar.SeekBarBean;
 import com.jyn.subsectionseekbar.SubsectionSeekBar;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         final TextView seekbarTx = findViewById(R.id.seekbar_tx);
         rangeSeekBar.setProgress(50);
 //        rangeSeekBar.setSecondaryProgress(700);
+        rangeSeekBar.setSeekBarBeans(getSeekBars());
         rangeSeekBar.setOnSubsectionSeekBarChangeListener(new SubsectionSeekBar.onSubsectionSeekBarChangeListener() {
             @SuppressLint("SetTextI18n")
             @Override
@@ -45,5 +50,12 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public List<SeekBarBean> getSeekBars() {
+        List<SeekBarBean> seekBarBeans = new ArrayList<>();
+        seekBarBeans.add(new SeekBarBean(getResources().getColor(R.color.red1), 500, 600));
+        seekBarBeans.add(new SeekBarBean(getResources().getColor(R.color.red1), 700, 800));
+        return seekBarBeans;
     }
 }

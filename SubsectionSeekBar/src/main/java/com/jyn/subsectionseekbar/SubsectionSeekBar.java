@@ -1,7 +1,6 @@
 package com.jyn.subsectionseekbar;
 
 import android.animation.TypeEvaluator;
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,14 +14,11 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.SeekBar;
+
+import java.util.List;
 
 public class SubsectionSeekBar extends View {
     private Context mContext;
-    /**
-     * 导航按钮
-     */
-    private SeekBar seekBar = new SeekBar();
 
     /**
      * 默认总进度
@@ -38,6 +34,26 @@ public class SubsectionSeekBar extends View {
      * 第二条进度条值
      */
     private int mSecondaryProgress = 0;
+
+    /**
+     * bar 背景色
+     */
+    private int progressBarColor;
+
+    /**
+     * bar 进度条颜色
+     */
+    private int progressColor;
+
+    /**
+     * 第二进度条颜色
+     */
+    private int secondaryProgressColor;
+
+    /**
+     * 分段背景色值
+     */
+    private List<SeekBarBean> seekBarBeans;
 
     /**
      * 当前进度百分比
@@ -57,10 +73,12 @@ public class SubsectionSeekBar extends View {
      * 圆角
      */
     private int lineCorners;
+
     /**
      * Bar 的宽度
      */
     private int lineWidth;
+
     /**
      * 总体背景色
      */
@@ -70,10 +88,16 @@ public class SubsectionSeekBar extends View {
      * 已走完进度背景色
      */
     private RectF progressLine = new RectF();
+
     /**
      * 第二进度颜色
      */
     private RectF secondaryProgressLine = new RectF();
+
+    /**
+     * 导航按钮
+     */
+    private SeekBar seekBar = new SeekBar();
 
     /**
      * SubsectionSeekBar 监听
@@ -111,7 +135,6 @@ public class SubsectionSeekBar extends View {
         updateSeekBar(percent);
     }
 
-
     /**
      * 设置第二进度
      *
@@ -120,6 +143,22 @@ public class SubsectionSeekBar extends View {
     public void setSecondaryProgress(int secondaryProgress) {
         this.mSecondaryProgress = secondaryProgress;
         invalidate();
+    }
+
+    public void setProgressBarColor(int progressBarColor) {
+        this.progressBarColor = progressBarColor;
+    }
+
+    public void setProgressColor(int progressColor) {
+        this.progressColor = progressColor;
+    }
+
+    public void setSecondaryProgressColor(int secondaryProgressColor) {
+        this.secondaryProgressColor = secondaryProgressColor;
+    }
+
+    public void setSeekBarBeans(List<SeekBarBean> seekBarBeans) {
+        this.seekBarBeans = seekBarBeans;
     }
 
     /**
@@ -153,7 +192,7 @@ public class SubsectionSeekBar extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         int seekBarRadius = h / 2;
-        /**
+        /*
          * 属性 left right top bottom 描述了SeekBar按钮的位置
          * 蓝后根据它们预先设置确定出 RectF line 背景的三维
          * lineCorners 圆滑的边缘似乎会比直角更好看
@@ -177,6 +216,11 @@ public class SubsectionSeekBar extends View {
         mBackgroundPaint.setStyle(Paint.Style.FILL);
         mBackgroundPaint.setAntiAlias(true);
         drawBackground(canvas);
+        if (seekBarBeans.size() > 0) {
+            for (int i = 0; i < seekBarBeans.size(); i++) {
+                drawSubsectionBean(canvas, seekBarBeans.get(i));
+            }
+        }
         drawSecondaryProgress(canvas);
         drawProgress(canvas);
         // 绘制按钮
@@ -186,7 +230,7 @@ public class SubsectionSeekBar extends View {
     /**
      * 绘制背景
      *
-     * @param canvas
+     * @param canvas 画布
      */
     private void drawBackground(Canvas canvas) {
         mBackgroundPaint.setColor(Color.parseColor("#d9d9d9"));
@@ -199,10 +243,41 @@ public class SubsectionSeekBar extends View {
         canvas.drawRoundRect(line, lineCorners, lineCorners, mBackgroundPaint);
     }
 
+    private void drawSubsectionBean(Canvas canvas, SeekBarBean seekBarBean) {
+        //起点
+        int origin = seekBarBean.getOrigin();
+        //终点
+        int terminus = seekBarBean.getTerminus();
+
+        Log.i("main", "origin:" + origin);
+        Log.i("main", "terminus:" + terminus);
+
+        //起点位置 绘制
+        int originLeft = (int) (origin * 1f / mMax * lineWidth);
+        //终点位置 绘制
+        int terminusRight = (int) (terminus * 1f / mMax * lineWidth);
+        mBackgroundPaint.setColor(seekBarBean.getColor());
+        RectF subsectionLine = new RectF();
+        subsectionLine.set(lineLeft + originLeft, lineTop, lineLeft + terminusRight, lineBottom);
+        canvas.drawRoundRect(subsectionLine, lineCorners, lineCorners, mBackgroundPaint);
+    }
+
+    /**
+     * 绘制第二条进度条的颜色
+     *
+     * @param canvas 画布
+     */
+    private void drawSecondaryProgress(Canvas canvas) {
+        mBackgroundPaint.setColor(Color.parseColor("#98F5FF"));
+        int secondaryprogressLineWidth = (int) (mSecondaryProgress * 1f / mMax * lineWidth);
+        secondaryProgressLine.set(lineLeft, lineTop, secondaryprogressLineWidth + lineLeft, lineBottom);
+        canvas.drawRoundRect(secondaryProgressLine, lineCorners, lineCorners, mBackgroundPaint);
+    }
+
     /**
      * 绘制已走过进度的颜色
      *
-     * @param canvas
+     * @param canvas 画布
      */
     private void drawProgress(Canvas canvas) {
         int progressLineWidth = (int) (lineWidth * percent);
@@ -211,17 +286,6 @@ public class SubsectionSeekBar extends View {
         canvas.drawRoundRect(progressLine, lineCorners, lineCorners, mBackgroundPaint);
     }
 
-    /**
-     * 绘制第二条进度条的颜色
-     *
-     * @param canvas
-     */
-    private void drawSecondaryProgress(Canvas canvas) {
-        mBackgroundPaint.setColor(Color.parseColor("#98F5FF"));
-        int secondaryprogressLineWidth = (int) (mSecondaryProgress * 1f / mMax * lineWidth);
-        secondaryProgressLine.set(lineLeft, lineTop, secondaryprogressLineWidth + lineLeft, lineBottom);
-        canvas.drawRoundRect(secondaryProgressLine, lineCorners, lineCorners, mBackgroundPaint);
-    }
 
     /**
      * 点击监听
@@ -278,7 +342,6 @@ public class SubsectionSeekBar extends View {
     }
 
     public class SeekBar {
-        //        int lineWidth; // 拖动条宽度 可在onSizeChanged时刻获得
         float currPercent;
 
         /**
@@ -324,7 +387,7 @@ public class SubsectionSeekBar extends View {
          * @param heightSize RangeSeekBar期望SeekBar所拥有的高度
          */
         void onSizeChanged(int centerX, int centerY, int heightSize) {
-            /**
+            /*
              * 属性 left right top bottom 描述了SeekBar按钮的位置<br>
              */
             this.heightSize = heightSize;
@@ -428,6 +491,9 @@ public class SubsectionSeekBar extends View {
         }
     }
 
+    /**
+     * SubsectionSeekBar的监听
+     */
     public interface onSubsectionSeekBarChangeListener {
         /**
          * 进度条改变后的监听

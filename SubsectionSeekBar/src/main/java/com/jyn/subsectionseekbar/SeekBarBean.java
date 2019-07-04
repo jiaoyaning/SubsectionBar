@@ -3,31 +3,31 @@ package com.jyn.subsectionseekbar;
 /**
  * 颜色分段bean类
  */
-public class ProgressBarBean {
+public class SeekBarBean {
     /**
      * 颜色 RGB值
      */
-    private String color;
+    private int color;
     /**
      * 起点
      */
     private int origin;
     /**
-     * 持续
+     * 终点
      */
-    private int extent;
+    private int terminus;
 
-    public ProgressBarBean(String color, int origin, int extent) {
+    public SeekBarBean(int color, int origin, int terminus) {
         this.color = color;
         this.origin = origin;
-        this.extent = extent;
+        this.terminus = terminus;
     }
 
-    public String getColor() {
+    public int getColor() {
         return color;
     }
 
-    public void setColor(String color) {
+    public void setColor(int color) {
         this.color = color;
     }
 
@@ -39,11 +39,11 @@ public class ProgressBarBean {
         this.origin = origin;
     }
 
-    public int getExtent() {
-        return extent;
+    public int getTerminus() {
+        return terminus;
     }
 
-    public void setExtent(int extent) {
-        this.extent = extent;
+    public void setTerminus(int terminus) {
+        this.terminus = terminus;
     }
 }
