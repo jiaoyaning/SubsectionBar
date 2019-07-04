@@ -15,17 +15,24 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.SeekBar;
 
 public class RangeSeekBar extends View {
     private Context mContext;
+    /**
+     * 导航按钮
+     */
     private SeekBar seekBar = new SeekBar();
 
     /**
      * 默认总进度
      */
-    private int max = 1000;
+    private int mMax = 1000;
 
-
+    /**
+     * 当前进度
+     */
+    private int mProgress = 0;
 
     /**
      * 背景色画笔
@@ -40,7 +47,11 @@ public class RangeSeekBar extends View {
     private int lineWidth;
     private RectF line = new RectF();
 
-    private android.widget.SeekBar.OnSeekBarChangeListener onSeekBarChangeListener;
+    /**
+     * SubsectionSeekBar 监听
+     */
+    private onSubsectionSeekBarChangeListener onSubsectionSeekBarChangeListener;
+
 
     public RangeSeekBar(Context context) {
         super(context);
@@ -51,16 +62,41 @@ public class RangeSeekBar extends View {
         this.mContext = context;
     }
 
-    public void setOnSeekBarChangeListener(android.widget.SeekBar.OnSeekBarChangeListener onSeekBarChangeListener) {
-        this.onSeekBarChangeListener = onSeekBarChangeListener;
+    /**
+     * 设置最大值
+     *
+     * @param max 最大值
+     */
+    public void setMax(int max) {
+        this.mMax = max;
+    }
+
+    /**
+     * 设置进度
+     *
+     * @param progress 进度值
+     */
+    public void setProgress(int progress) {
+        this.mProgress = progress;
+        float percent = progress * 1f / mMax;
+        updateSeekBar(percent);
+    }
+
+    /**
+     * 设置监听
+     *
+     * @param onSubsectionSeekBarChangeListener 监听
+     */
+    public void setOnSubsectionSeekBarChangeListener(onSubsectionSeekBarChangeListener onSubsectionSeekBarChangeListener) {
+        this.onSubsectionSeekBarChangeListener = onSubsectionSeekBarChangeListener;
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-        if (heightSize * 2 > widthSize) {
-            setMeasuredDimension(widthSize, widthSize / 2);
+        if (heightSize > widthSize) {
+            setMeasuredDimension(widthSize, widthSize);
         } else {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
@@ -116,14 +152,22 @@ public class RangeSeekBar extends View {
 
     /**
      * 点击监听
-     *
-     * @param event
-     * @return
      */
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        //点击位置坐标 x
         float x = event.getX();
+        // bar的位置
+        float percent;
+        if (x <= lineLeft) {
+            percent = 0;
+        } else if (x >= lineRight) {
+            percent = 1;
+        } else {
+            percent = (x - lineLeft) * 1f / (lineWidth);
+        }
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
 //                boolean touchResult = false;
@@ -132,22 +176,33 @@ public class RangeSeekBar extends View {
 //                    touchResult = true;
 //                    Toast.makeText(mContext, "SeekBar被点击", Toast.LENGTH_SHORT).show();
 //                }
-            case MotionEvent.ACTION_MOVE:
-                float percent;
-                if (x <= lineLeft) {
-                    percent = 0;
-                } else if (x >= lineRight) {
-                    percent = 1;
-                } else {
-                    percent = (x - lineLeft) * 1f / (lineWidth);
+                if (onSubsectionSeekBarChangeListener != null) {
+                    onSubsectionSeekBarChangeListener.onStartTrackingTouch(this);
                 }
-                Log.i("main", "percent:" + percent);
-                // SeekBar按钮根据当前手指在拖动条上的滑动而滑动
-                seekBar.slide(percent);
-                this.invalidate();
+            case MotionEvent.ACTION_MOVE:
+                //改变后的进度
+                int changedProgress = (int) (percent * mMax);
+                if (changedProgress != mProgress) {
+                    mProgress = changedProgress;
+                    if (onSubsectionSeekBarChangeListener != null) {
+                        onSubsectionSeekBarChangeListener.onProgressChanged(this, mProgress, true);
+                    }
+                }
+                updateSeekBar(percent);
+                break;
+            case MotionEvent.ACTION_UP:
+                if (onSubsectionSeekBarChangeListener != null) {
+                    onSubsectionSeekBarChangeListener.onStopTrackingTouch(this);
+                }
                 break;
         }
         return super.onTouchEvent(event);
+    }
+
+    public void updateSeekBar(float percent) {
+        // SeekBar按钮根据当前手指在拖动条上的滑动而滑动
+        seekBar.slide(percent);
+        this.invalidate();
     }
 
     public class SeekBar {
@@ -178,7 +233,6 @@ public class RangeSeekBar extends View {
         private RadialGradient shadowGradient;
 
         float material = 0;
-        ValueAnimator anim;
         final TypeEvaluator<Integer> te = new TypeEvaluator<Integer>() {
             @Override
             public Integer evaluate(float fraction, Integer startValue, Integer endValue) {
@@ -279,9 +333,6 @@ public class RangeSeekBar extends View {
 
         /**
          * 判断是否被点击
-         *
-         * @param event
-         * @return
          */
         boolean collide(MotionEvent event) {
             float x = event.getX();
@@ -293,7 +344,7 @@ public class RangeSeekBar extends View {
         /**
          * 滑动
          *
-         * @param percent
+         * @param percent 滑动百分比
          */
         void slide(float percent) {
             if (percent < 0) {
@@ -303,5 +354,30 @@ public class RangeSeekBar extends View {
             }
             currPercent = percent;
         }
+    }
+
+    public interface onSubsectionSeekBarChangeListener {
+        /**
+         * 进度条改变后的监听
+         *
+         * @param view     本view
+         * @param progress 进度
+         * @param fromUser 是否是用户改变
+         */
+        void onProgressChanged(View view, int progress, boolean fromUser);
+
+        /**
+         * 触发开始的点击事件
+         *
+         * @param view 本view
+         */
+        void onStartTrackingTouch(View view);
+
+        /**
+         * 触发结束后的点击事件
+         *
+         * @param view 本view
+         */
+        void onStopTrackingTouch(View view);
     }
 }
