@@ -113,6 +113,11 @@ public class SubsectionSeekBar extends View {
     public SubsectionSeekBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.mContext = context;
+        init();
+    }
+
+    private void init() {
+
     }
 
     /**
@@ -248,18 +253,16 @@ public class SubsectionSeekBar extends View {
         int origin = seekBarBean.getOrigin();
         //终点
         int terminus = seekBarBean.getTerminus();
-
-        Log.i("main", "origin:" + origin);
-        Log.i("main", "terminus:" + terminus);
-
-        //起点位置 绘制
-        int originLeft = (int) (origin * 1f / mMax * lineWidth);
-        //终点位置 绘制
-        int terminusRight = (int) (terminus * 1f / mMax * lineWidth);
-        mBackgroundPaint.setColor(seekBarBean.getColor());
-        RectF subsectionLine = new RectF();
-        subsectionLine.set(lineLeft + originLeft, lineTop, lineLeft + terminusRight, lineBottom);
-        canvas.drawRoundRect(subsectionLine, lineCorners, lineCorners, mBackgroundPaint);
+        if (0 <= origin && origin < terminus & terminus <= mMax) {
+            //起点位置 绘制
+            int originLeft = (int) (origin * 1f / mMax * lineWidth);
+            //终点位置 绘制
+            int terminusRight = (int) (terminus * 1f / mMax * lineWidth);
+            mBackgroundPaint.setColor(seekBarBean.getColor());
+            RectF subsectionLine = new RectF();
+            subsectionLine.set(lineLeft + originLeft, lineTop, lineLeft + terminusRight, lineBottom);
+            canvas.drawRoundRect(subsectionLine, lineCorners, lineCorners, mBackgroundPaint);
+        }
     }
 
     /**
@@ -282,6 +285,7 @@ public class SubsectionSeekBar extends View {
     private void drawProgress(Canvas canvas) {
         int progressLineWidth = (int) (lineWidth * percent);
         progressLine.set(lineLeft, lineTop, progressLineWidth + lineLeft, lineBottom);
+//        mBackgroundPaint.setColor(Color.parseColor("#B300B6D0"));
         mBackgroundPaint.setColor(Color.parseColor("#00B6D0"));
         canvas.drawRoundRect(progressLine, lineCorners, lineCorners, mBackgroundPaint);
     }

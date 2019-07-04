@@ -54,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
 
     public List<SeekBarBean> getSeekBars() {
         List<SeekBarBean> seekBarBeans = new ArrayList<>();
-        seekBarBeans.add(new SeekBarBean(getResources().getColor(R.color.red1), 500, 600));
-        seekBarBeans.add(new SeekBarBean(getResources().getColor(R.color.red1), 700, 800));
+        seekBarBeans.add(new SeekBarBean(getResources().getColor(R.color.red1), 200, 300));
+        seekBarBeans.add(new SeekBarBean(getResources().getColor(R.color.blue2), 500, 1000));
         return seekBarBeans;
     }
 }
