@@ -217,12 +217,14 @@ public class SubsectionSeekBar extends View {
         lineTop = seekBarRadius - seekBarRadius / ratio;
         lineBottom = seekBarRadius + seekBarRadius / ratio;
 
+        //progress宽度
         lineWidth = lineRight - lineLeft;
         //左上右下
         line.set(lineLeft, lineTop, lineRight, lineBottom);
+        //圆角
         lineCorners = (int) ((lineBottom - lineTop) * 0.45f);
         // 在RangeSeekBar确定尺寸时确定SeekBar按钮尺寸
-        seekBar.onSizeChanged(seekBarRadius, seekBarRadius, h);
+        seekBar.onSizeChanged(seekBarRadius, seekBarRadius, seekBarRadius);
     }
 
     @Override
@@ -301,7 +303,6 @@ public class SubsectionSeekBar extends View {
     private void drawProgress(Canvas canvas) {
         int progressLineWidth = (int) (lineWidth * percent);
         progressLine.set(lineLeft, lineTop, progressLineWidth + lineLeft, lineBottom);
-//        mBackgroundPaint.setColor(Color.parseColor("#B300B6D0"));
         mBackgroundPaint.setColor(Color.parseColor("#00B6D0"));
         canvas.drawRoundRect(progressLine, lineCorners, lineCorners, mBackgroundPaint);
     }
@@ -326,12 +327,6 @@ public class SubsectionSeekBar extends View {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-//                boolean touchResult = false;
-                // 进行检测，手指手指是否落在当前SeekBar上。即声明SeekBar时使用left、top、right、bottom属性所描述区域的内部
-//                if (seekBar.collide(event)) {
-//                    touchResult = true;
-//                    Toast.makeText(mContext, "SeekBar被点击", Toast.LENGTH_SHORT).show();
-//                }
                 if (onSubsectionSeekBarChangeListener != null) {
                     onSubsectionSeekBarChangeListener.onStartTrackingTouch(this);
                 }
@@ -362,89 +357,44 @@ public class SubsectionSeekBar extends View {
     }
 
     public class SeekBar {
+
+        /**
+         * 按钮位置，百分比
+         */
         float currPercent;
 
         /**
-         * widthSize：导航点宽度
-         * heightSize：导航点高度
+         * 移动后的左边界
          */
-        int widthSize;
-        int heightSize;
+        int left;
 
         /**
-         * 右左中下，点位点
+         * 导航点中心坐标
          */
-        int left, right, top, bottom;
-        Bitmap bmp;
+        int centerX;
+        int centerY;
 
+        /**
+         * 导航圈半径
+         */
+        int radius;
         /**
          * 导航圆圈的bar
          */
         private Paint defaultPaint;
 
         /**
-         * 径向渐变，由内而外渐变
-         */
-        private RadialGradient shadowGradient;
-
-        float material = 0;
-        final TypeEvaluator<Integer> te = new TypeEvaluator<Integer>() {
-            @Override
-            public Integer evaluate(float fraction, Integer startValue, Integer endValue) {
-                int alpha = (int) (Color.alpha(startValue) + fraction * (Color.alpha(endValue) - Color.alpha(startValue)));
-                int red = (int) (Color.red(startValue) + fraction * (Color.red(endValue) - Color.red(startValue)));
-                int green = (int) (Color.green(startValue) + fraction * (Color.green(endValue) - Color.green(startValue)));
-                int blue = (int) (Color.blue(startValue) + fraction * (Color.blue(endValue) - Color.blue(startValue)));
-                return Color.argb(alpha, red, green, blue);
-            }
-        };
-
-        /**
          * 当RangeSeekBar尺寸发生变化时，SeekBar按钮尺寸随之变化
          *
-         * @param centerX    SeekBar按钮的X中心在RangeSeekBar中的相对位置
-         * @param centerY    SeekBar按钮的Y中心在RangeSeekBar中的相对位置
-         * @param heightSize RangeSeekBar期望SeekBar所拥有的高度
+         * @param centerX SeekBar按钮的X中心在RangeSeekBar中的相对位置
+         * @param centerY SeekBar按钮的Y中心在RangeSeekBar中的相对位置
          */
-        void onSizeChanged(int centerX, int centerY, int heightSize) {
-            /*
-             * 属性 left right top bottom 描述了SeekBar按钮的位置<br>
-             */
-            this.heightSize = heightSize;
-            widthSize = (int) (heightSize * 0.8f); //为阴影留出位置
-            left = centerX - widthSize / 2;
-            right = centerX + widthSize / 2;
-            top = centerY - heightSize / 2;
-            bottom = centerY + heightSize / 2;
-
-            bmp = Bitmap.createBitmap(widthSize, heightSize, Bitmap.Config.ARGB_8888);
-            int bmpCenterX = bmp.getWidth() / 2;
-            int bmpCenterY = bmp.getHeight() / 2;
-
-            //背景条半径
-            int bmpRadius = (int) (widthSize * 0.5f);
-
+        void onSizeChanged(int centerX, int centerY, int radius) {
+            this.centerX = centerX;
+            this.centerY = centerY;
+            this.radius = radius;
             defaultPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            // 绘制Shadow
-            defaultPaint.setStyle(Paint.Style.FILL);
-            Canvas defaultCanvas = new Canvas(bmp);
-            int barShadowRadius = (int) (bmpRadius * 0.95f);
-            defaultCanvas.save();
-            defaultCanvas.translate(0, bmpRadius * 0.25f);
-            shadowGradient = new RadialGradient(bmpCenterX, bmpCenterY, barShadowRadius,
-                    Color.BLACK, Color.TRANSPARENT, Shader.TileMode.CLAMP);
-            defaultPaint.setShader(shadowGradient);
-            defaultCanvas.drawCircle(bmpCenterX, bmpCenterY, barShadowRadius, defaultPaint);
-            defaultPaint.setShader(null);
-            defaultCanvas.restore();
-            // 绘制Body
-            defaultPaint.setStyle(Paint.Style.FILL);
-            defaultPaint.setColor(0xFFFFFFFF);
-            defaultCanvas.drawCircle(bmpCenterX, bmpCenterY, bmpRadius, defaultPaint);
-            // 绘制Border
-            defaultPaint.setStyle(Paint.Style.STROKE);
-            defaultPaint.setColor(0xFFD7D7D7);
-            defaultCanvas.drawCircle(bmpCenterX, bmpCenterY, bmpRadius, defaultPaint);
+            defaultPaint.setColor(Color.parseColor("#FF7000"));
         }
 
         void draw(Canvas canvas) {
@@ -459,42 +409,17 @@ public class SubsectionSeekBar extends View {
              */
             canvas.translate(left, 0);
             canvas.translate(offset, 0);
-            drawDefault(canvas);
+            canvas.drawCircle(centerX, centerY, radius, defaultPaint);
             canvas.restore();
         }
 
-        private void drawDefault(Canvas canvas) {
-            int centerX = widthSize / 2;
-            int centerY = heightSize / 2;
-            int radius = (int) (widthSize * 0.5f);
-            // draw shadow
-            defaultPaint.setStyle(Paint.Style.FILL);
-            canvas.save();
-            canvas.translate(0, radius * 0.25f);
-            canvas.scale(1 + (0.1f * material), 1 + (0.1f * material), centerX, centerY);
-            defaultPaint.setShader(shadowGradient);
-            canvas.drawCircle(centerX, centerY, radius, defaultPaint);
-            defaultPaint.setShader(null);
-            canvas.restore();
-            // draw body
-            defaultPaint.setStyle(Paint.Style.FILL);
-            defaultPaint.setColor(te.evaluate(material, 0xFFFFFFFF, 0xFFE7E7E7));
-            canvas.drawCircle(centerX, centerY, radius, defaultPaint);
-            // draw border
-            defaultPaint.setStyle(Paint.Style.STROKE);
-            defaultPaint.setColor(0xFFD7D7D7);
-            canvas.drawCircle(centerX, centerY, radius, defaultPaint);
-        }
-
-        /**
-         * 判断是否被点击
-         */
-        boolean collide(MotionEvent event) {
-            float x = event.getX();
-            float y = event.getY();
-            int offset = (int) (lineWidth * currPercent);
-            return x > left + offset && x < right + offset && y > top && y < bottom;
-        }
+//        boolean collide(MotionEvent event) {
+//            //判断是否被点击
+//            float x = event.getX();
+//            float y = event.getY();
+//            int offset = (int) (lineWidth * currPercent);
+//            return x > left + offset && x < right + offset && y > top && y < bottom;
+//        }
 
         /**
          * 滑动
@@ -537,22 +462,5 @@ public class SubsectionSeekBar extends View {
          * @param view 本view
          */
         void onStopTrackingTouch(View view);
-    }
-
-
-    /**
-     * 根据手机的分辨率从 dip 的单位 转成为 px(像素)
-     */
-    public static int dip2px(Context context, float dpValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dpValue * scale + 0.5f);
-    }
-
-    /**
-     * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
-     */
-    public static int px2dip(Context context, float pxValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (pxValue / scale + 0.5f);
     }
 }
