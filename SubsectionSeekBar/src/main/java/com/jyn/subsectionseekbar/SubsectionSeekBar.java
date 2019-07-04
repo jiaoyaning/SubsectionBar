@@ -53,7 +53,13 @@ public class SubsectionSeekBar extends View {
      * SeekBar按钮的位置
      */
     private int lineTop, lineBottom, lineLeft, lineRight;
+    /**
+     * 圆角
+     */
     private int lineCorners;
+    /**
+     * Bar 的宽度
+     */
     private int lineWidth;
     /**
      * 总体背景色
