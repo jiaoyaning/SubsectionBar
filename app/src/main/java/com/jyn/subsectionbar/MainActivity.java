@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.jyn.subsectionprogressbar.SubsectionProgressBar;
-import com.jyn.subsectionseekbar.RangeSeekBar;
+import com.jyn.subsectionseekbar.SubsectionSeekBar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,11 +23,11 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
         SubsectionProgressBar subsectionpb = findViewById(R.id.subsectionpb);
         subsectionpb.setMaxProgress(100);
-        RangeSeekBar rangeSeekBar = findViewById(R.id.range_seek_bar);
+        SubsectionSeekBar rangeSeekBar = findViewById(R.id.range_seek_bar);
         final TextView seekbarTx = findViewById(R.id.seekbar_tx);
-        rangeSeekBar.setProgress(500);
-        rangeSeekBar.setSecondaryProgress(700);
-        rangeSeekBar.setOnSubsectionSeekBarChangeListener(new RangeSeekBar.onSubsectionSeekBarChangeListener() {
+        rangeSeekBar.setProgress(50);
+//        rangeSeekBar.setSecondaryProgress(700);
+        rangeSeekBar.setOnSubsectionSeekBarChangeListener(new SubsectionSeekBar.onSubsectionSeekBarChangeListener() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onProgressChanged(View view, int progress, boolean fromUser) {

@@ -14,23 +14,17 @@
 		android:layout_width="match_parent"
 		android:layout_height="10dp" />
 
-	<com.jyn.subsectionseekbar.SubsectionSeekBar
-		android:layout_width="match_parent"
-		android:layout_height="20dp"
-		android:layout_marginTop="10dp" />
-
 	<TextView
 		android:id="@+id/seekbar_tx"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="10dp" />
 
-	<com.jyn.subsectionseekbar.RangeSeekBar
+	<com.jyn.subsectionseekbar.SubsectionSeekBar
 		android:id="@+id/range_seek_bar"
 		android:layout_width="match_parent"
 		android:layout_height="20dp"
 		android:clickable="true"
 		android:focusable="true" />
-
 
 </LinearLayout>
