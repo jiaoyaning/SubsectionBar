@@ -30,10 +30,14 @@ public class RangeSeekBar extends View {
     private int mMax = 1000;
 
     /**
-     * 当前进度
+     * 当前进度 相对max值而言
      */
     private int mProgress = 0;
 
+    /**
+     * 当前进度百分比
+     */
+    private float percent;
     /**
      * 背景色画笔
      */
@@ -45,7 +49,15 @@ public class RangeSeekBar extends View {
     private int lineTop, lineBottom, lineLeft, lineRight;
     private int lineCorners;
     private int lineWidth;
+    /**
+     * 总体背景色
+     */
     private RectF line = new RectF();
+
+    /**
+     * 已走完进度背景色
+     */
+    private RectF seekLine = new RectF();
 
     /**
      * SubsectionSeekBar 监听
@@ -78,7 +90,7 @@ public class RangeSeekBar extends View {
      */
     public void setProgress(int progress) {
         this.mProgress = progress;
-        float percent = progress * 1f / mMax;
+        percent = progress * 1f / mMax;
         updateSeekBar(percent);
     }
 
@@ -121,12 +133,11 @@ public class RangeSeekBar extends View {
         lineRight = w - seekBarRadius;
         lineTop = seekBarRadius - seekBarRadius / 4;
         lineBottom = seekBarRadius + seekBarRadius / 4;
-        lineWidth = lineRight - lineLeft;
 
+        lineWidth = lineRight - lineLeft;
         //左上右下
         line.set(lineLeft, lineTop, lineRight, lineBottom);
         lineCorners = (int) ((lineBottom - lineTop) * 0.45f);
-
         // 在RangeSeekBar确定尺寸时确定SeekBar按钮尺寸
         seekBar.onSizeChanged(seekBarRadius, seekBarRadius, h);
     }
@@ -146,6 +157,12 @@ public class RangeSeekBar extends View {
          * 绘制背景图
          */
         canvas.drawRoundRect(line, lineCorners, lineCorners, mBackgroundPaint);
+        //绘制已走过进度的颜色
+        int seekLineWidth = (int) (lineWidth * percent);
+
+        seekLine.set(lineLeft, lineTop, seekLineWidth + lineLeft, lineBottom);
+        mBackgroundPaint.setColor(Color.parseColor("#0198AE"));
+        canvas.drawRoundRect(seekLine, lineCorners, lineCorners, mBackgroundPaint);
         // 绘制按钮图
         seekBar.draw(canvas);
     }
@@ -159,7 +176,6 @@ public class RangeSeekBar extends View {
         //点击位置坐标 x
         float x = event.getX();
         // bar的位置
-        float percent;
         if (x <= lineLeft) {
             percent = 0;
         } else if (x >= lineRight) {
