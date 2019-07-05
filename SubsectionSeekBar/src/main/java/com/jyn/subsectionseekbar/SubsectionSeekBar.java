@@ -152,8 +152,7 @@ public class SubsectionSeekBar extends View {
      */
     public void setProgress(int progress) {
         this.mProgress = progress;
-        percent = progress * 1f / mMax;
-        updateSeekBar(percent);
+        updateSeekBar(progress);
     }
 
     public int getProgress() {
@@ -247,7 +246,6 @@ public class SubsectionSeekBar extends View {
         mBackgroundPaint.setStyle(Paint.Style.FILL);
         mBackgroundPaint.setAntiAlias(true);
         drawBackground(canvas);
-        LogUtils.tag("main").i(seekBarBeans);
         if (seekBarBeans != null && seekBarBeans.size() > 0) {
             for (int i = 0; i < seekBarBeans.size(); i++) {
                 drawSubsectionBean(canvas, seekBarBeans.get(i));
@@ -339,42 +337,73 @@ public class SubsectionSeekBar extends View {
         // bar的位置
         if (x <= lineLeft) {
             percent = 0;
+            mProgress = 0;
         } else if (x >= lineRight) {
             percent = 1;
+            mProgress = mMax;
         } else {
             percent = (x - lineLeft) * 1f / (lineWidth);
+            mProgress = (int) ((x - lineLeft) * 1f / (lineWidth) * mMax);
         }
 
+        int checkProgress = checkProgress(this.mProgress);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (onSubsectionSeekBarChangeListener != null) {
                     onSubsectionSeekBarChangeListener.onStartTrackingTouch(this);
                 }
             case MotionEvent.ACTION_MOVE:
-                //改变后的进度
-                int changedProgress = (int) (percent * mMax);
-                if (changedProgress != mProgress) {
-                    mProgress = changedProgress;
-                    if (onSubsectionSeekBarChangeListener != null) {
-                        onSubsectionSeekBarChangeListener.onProgressChanged(this, mProgress, true);
-                    }
-                }
-                updateSeekBar(percent);
-                return true;
-            case MotionEvent.ACTION_UP:
+                this.mProgress = checkProgress;
+                updateSeekBar(this.mProgress);
                 if (onSubsectionSeekBarChangeListener != null) {
+                    onSubsectionSeekBarChangeListener.onProgressChanged(this, this.mProgress, true);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                this.mProgress = checkProgress;
+                updateSeekBar(this.mProgress);
+                if (onSubsectionSeekBarChangeListener != null && checkProgress != mProgress) {
                     onSubsectionSeekBarChangeListener.onStopTrackingTouch(this);
-                    onSubsectionSeekBarChangeListener.onProgressChanged(this, mProgress, true);
+                    onSubsectionSeekBarChangeListener.onProgressChanged(this, this.mProgress, true);
                 }
                 break;
         }
-        return super.onTouchEvent(event);
+        return true;
     }
 
     public void updateSeekBar(float percent) {
         // SeekBar按钮根据当前手指在拖动条上的滑动而滑动
         seekBar.slide(percent);
         this.invalidate();
+    }
+
+    public void updateSeekBar(int progress) {
+        // SeekBar按钮根据当前手指在拖动条上的滑动而滑动
+        percent = progress * 1f / mMax;
+        seekBar.slide(percent);
+        this.invalidate();
+    }
+
+    /**
+     * 判断该点是否处在被禁止范围内
+     *
+     * @param progress 要判断的点坐标
+     * @return 返回处理后的点坐标，
+     * 如果处于被限制坐标内，返回离其最近的位置。
+     * 如果不是处于被限制坐标内，返回处理后的点坐标
+     */
+    public int checkProgress(int progress) {
+        for (int i = 0; i < seekBarBeans.size(); i++) {
+            SeekBarBean seekBarBean = seekBarBeans.get(i);
+            if (seekBarBean.isSkip()) {
+                int origin = seekBarBean.getOrigin();
+                int terminus = seekBarBean.getTerminus();
+                if (origin < progress && progress < terminus) {
+                    return terminus + 1;
+                }
+            }
+        }
+        return progress;
     }
 
     public class SeekBar {

@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.apkfuns.logutils.LogUtils;
 import com.jyn.subsectionprogressbar.SubsectionProgressBar;
 import com.jyn.subsectionseekbar.SeekBarBean;
 import com.jyn.subsectionseekbar.SubsectionSeekBar;
@@ -67,7 +68,8 @@ public class MainActivity extends AppCompatActivity {
             if (videoBean.isMark()) {
                 long origin = sum * 1000L / durationSum;
                 long terminus = origin + duration * 1000L / durationSum;
-                SeekBarBean seekBarBean = new SeekBarBean(this.getResources().getColor(R.color.red1), (int) origin, (int) terminus);
+                SeekBarBean seekBarBean = new SeekBarBean(
+                        this.getResources().getColor(R.color.red1), (int) origin, (int) terminus, true);
                 seekBarBeans.add(seekBarBean);
             }
             sum = sum + duration;
@@ -77,8 +79,10 @@ public class MainActivity extends AppCompatActivity {
 
     public List<SeekBarBean> getSeekBars() {
         List<SeekBarBean> seekBarBeans = new ArrayList<>();
-        seekBarBeans.add(new SeekBarBean(getResources().getColor(R.color.red1), 200, 300));
-        seekBarBeans.add(new SeekBarBean(getResources().getColor(R.color.blue2), 500, 1000));
+        seekBarBeans.add(new SeekBarBean(getResources().getColor(R.color.red1),
+                200, 300, false));
+        seekBarBeans.add(new SeekBarBean(getResources().getColor(R.color.blue2),
+                500, 1000, false));
         return seekBarBeans;
     }
 

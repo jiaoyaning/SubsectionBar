@@ -17,10 +17,16 @@ public class SeekBarBean {
      */
     private int terminus;
 
-    public SeekBarBean(int color, int origin, int terminus) {
+    /**
+     * 是否要跳过
+     */
+    private boolean isSkip;
+
+    public SeekBarBean(int color, int origin, int terminus, boolean isSkip) {
         this.color = color;
         this.origin = origin;
         this.terminus = terminus;
+        this.isSkip = isSkip;
     }
 
     public int getColor() {
@@ -45,5 +51,13 @@ public class SeekBarBean {
 
     public void setTerminus(int terminus) {
         this.terminus = terminus;
+    }
+
+    public boolean isSkip() {
+        return isSkip;
+    }
+
+    public void setSkip(boolean skip) {
+        isSkip = skip;
     }
 }
