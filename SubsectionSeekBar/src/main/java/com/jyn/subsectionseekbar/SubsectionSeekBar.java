@@ -15,6 +15,9 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.apkfuns.logutils.LogUtils;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class SubsectionSeekBar extends View {
@@ -58,7 +61,7 @@ public class SubsectionSeekBar extends View {
     /**
      * 分段背景色值
      */
-    private List<SeekBarBean> seekBarBeans;
+    private List<SeekBarBean> seekBarBeans = new ArrayList<>();
 
     /**
      * 进度条高度比例
@@ -153,6 +156,10 @@ public class SubsectionSeekBar extends View {
         updateSeekBar(percent);
     }
 
+    public int getProgress() {
+        return mProgress;
+    }
+
     /**
      * 设置第二进度
      *
@@ -177,7 +184,9 @@ public class SubsectionSeekBar extends View {
     }
 
     public void setSeekBarBeans(List<SeekBarBean> seekBarBeans) {
-        this.seekBarBeans = seekBarBeans;
+        this.seekBarBeans.clear();
+        this.seekBarBeans.addAll(seekBarBeans);
+        this.invalidate();
     }
 
     /**
@@ -238,7 +247,8 @@ public class SubsectionSeekBar extends View {
         mBackgroundPaint.setStyle(Paint.Style.FILL);
         mBackgroundPaint.setAntiAlias(true);
         drawBackground(canvas);
-        if (seekBarBeans.size() > 0) {
+        LogUtils.tag("main").i(seekBarBeans);
+        if (seekBarBeans != null && seekBarBeans.size() > 0) {
             for (int i = 0; i < seekBarBeans.size(); i++) {
                 drawSubsectionBean(canvas, seekBarBeans.get(i));
             }
@@ -285,6 +295,12 @@ public class SubsectionSeekBar extends View {
             RectF subsectionLine = new RectF();
             subsectionLine.set(lineLeft + originLeft, lineTop, lineLeft + terminusRight, lineBottom);
             canvas.drawRoundRect(subsectionLine, lineCorners, lineCorners, mBackgroundPaint);
+        } else {
+            //直接手动抛出异常
+            throw new RuntimeException("坐标位置错误，\n" +
+                    "1：起点小于0；\n" +
+                    "2：起点大于终点；\n" +
+                    "3：终点小于总长");
         }
     }
 
@@ -344,10 +360,11 @@ public class SubsectionSeekBar extends View {
                     }
                 }
                 updateSeekBar(percent);
-                break;
+                return true;
             case MotionEvent.ACTION_UP:
                 if (onSubsectionSeekBarChangeListener != null) {
                     onSubsectionSeekBarChangeListener.onStopTrackingTouch(this);
+                    onSubsectionSeekBarChangeListener.onProgressChanged(this, mProgress, true);
                 }
                 break;
         }

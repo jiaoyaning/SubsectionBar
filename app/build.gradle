@@ -25,4 +25,5 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation project(path: ':SubsectionProgressBar')
     implementation project(path: ':SubsectionSeekBar')
+    implementation 'com.apkfuns.logutils:library:1.7.5'
 }
