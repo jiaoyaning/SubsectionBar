@@ -26,7 +26,7 @@
 		android:layout_height="20dp"
 		android:clickable="true"
 		android:focusable="true"
-		app:seekBarResId="@drawable/icon_seekbar"
-		app:max="1000" />
+		app:max="1000"
+		app:seekBarResId="@drawable/icon_seekbar" />
 
 </LinearLayout>
