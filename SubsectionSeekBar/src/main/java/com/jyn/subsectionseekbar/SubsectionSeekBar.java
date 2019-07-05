@@ -5,8 +5,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RadialGradient;
 import android.graphics.RectF;
@@ -50,6 +52,11 @@ public class SubsectionSeekBar extends View {
      * 第二进度条颜色
      */
     private int secondaryProgressColor;
+
+    /**
+     * 按钮图片ID
+     */
+    private int seekBarResId;
 
     /**
      * 分段背景色值
@@ -122,6 +129,7 @@ public class SubsectionSeekBar extends View {
         this.mContext = context;
         TypedArray t = context.obtainStyledAttributes(attrs, R.styleable.SubsectionSeekBar);
         mMax = t.getInt(R.styleable.SubsectionSeekBar_max, 1000);
+        seekBarResId = t.getResourceId(R.styleable.SubsectionSeekBar_seekBarResId, 0);
         backgroundColor = t.getColor(R.styleable.SubsectionSeekBar_backgroundColor, Color.parseColor("#d9d9d9"));
         progressColor = t.getColor(R.styleable.SubsectionSeekBar_progressColor, Color.parseColor("#00B6D0"));
         secondaryProgressColor = t.getColor(R.styleable.SubsectionSeekBar_secondaryProgressColor, Color.parseColor("#98F5FF"));
@@ -224,7 +232,7 @@ public class SubsectionSeekBar extends View {
         //圆角
         lineCorners = (int) ((lineBottom - lineTop) * 0.45f);
         // 在RangeSeekBar确定尺寸时确定SeekBar按钮尺寸
-        seekBar.onSizeChanged(seekBarRadius, seekBarRadius, seekBarRadius);
+        seekBar.onSizeChanged(seekBarRadius, seekBarRadius, h, seekBarRadius, seekBarResId, getContext());
     }
 
     @Override
@@ -307,7 +315,6 @@ public class SubsectionSeekBar extends View {
         canvas.drawRoundRect(progressLine, lineCorners, lineCorners, mBackgroundPaint);
     }
 
-
     /**
      * 点击监听
      */
@@ -384,32 +391,50 @@ public class SubsectionSeekBar extends View {
         private Paint defaultPaint;
 
         /**
+         * 如果按钮是张图片
+         */
+        Bitmap bmp;
+
+        /**
          * 当RangeSeekBar尺寸发生变化时，SeekBar按钮尺寸随之变化
          *
          * @param centerX SeekBar按钮的X中心在RangeSeekBar中的相对位置
          * @param centerY SeekBar按钮的Y中心在RangeSeekBar中的相对位置
          */
-        void onSizeChanged(int centerX, int centerY, int radius) {
+        void onSizeChanged(int centerX, int centerY, int hSize, int radius, int bmpResId, Context context) {
             this.centerX = centerX;
             this.centerY = centerY;
             this.radius = radius;
-            defaultPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            defaultPaint.setColor(Color.parseColor("#FF7000"));
+            if (bmpResId > 0) {
+                Log.e("main", "bmpResId:" + bmpResId);
+                Bitmap original = BitmapFactory.decodeResource(context.getResources(), bmpResId);
+                if (original != null) {
+                    Matrix matrix = new Matrix();
+//                    float scaleWidth = ((float) hSize) / original.getWidth();
+                    float scaleHeight = ((float) hSize) / original.getHeight();
+                    //等比按高度缩放
+                    matrix.postScale(scaleHeight, scaleHeight);
+                    bmp = Bitmap.createBitmap(original, 0, 0, original.getWidth(), original.getHeight(), matrix, true);
+                } else {
+                    defaultPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                    defaultPaint.setColor(Color.parseColor("#FF7000"));
+                }
+            } else {
+                defaultPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                defaultPaint.setColor(Color.parseColor("#FF7000"));
+            }
         }
 
         void draw(Canvas canvas) {
             int offset = (int) (lineWidth * currPercent);
             canvas.save();
-
-            /*
-             * 画布向（X，Y）方向平移
-             *
-             * 参数1: 向X轴方向移动x距离
-             * 参数2: 向Y轴方向移动y距离
-             */
-            canvas.translate(left, 0);
             canvas.translate(offset, 0);
-            canvas.drawCircle(centerX, centerY, radius, defaultPaint);
+            if (bmp != null) {
+                canvas.drawBitmap(bmp, left, left, null);
+            } else {
+                canvas.translate(left, 0);
+                canvas.drawCircle(centerX, centerY, radius, defaultPaint);
+            }
             canvas.restore();
         }
 
