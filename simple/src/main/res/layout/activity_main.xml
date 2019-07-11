@@ -30,6 +30,17 @@
 		app:seekBarResIdNormal="@mipmap/icon_seekbar_normal"
 		app:seekBarResIdPressed="@mipmap/icon_seekbar_pressed" />
 
+
+	<com.jyn.subsectionseekbar.SubsectionSeekBar
+		android:layout_width="match_parent"
+		android:layout_height="20dp"
+		android:layout_marginTop="20dp"
+		android:clickable="true"
+		android:focusable="true"
+		app:max="1000"
+		app:seekBarResIdNormal="@drawable/seek_thumb_normal"
+		app:seekBarResIdPressed="@drawable/seek_thumb_pressed" />
+
 	<com.jyn.subsectionseekbar.SubsectionSeekBar
 		android:layout_width="match_parent"
 		android:layout_height="15dp"

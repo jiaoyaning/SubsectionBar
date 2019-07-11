@@ -48,6 +48,11 @@ public class SubsectionSeekBar extends View {
 
     private int seekBarResIdPressed;
 
+    /**
+     * 判断是否被点击
+     */
+    private boolean isTouch = false;
+
     // 分段背景色值
     private List<SeekBarBean> seekBarBeans = new ArrayList<>();
 
@@ -213,7 +218,7 @@ public class SubsectionSeekBar extends View {
         //圆角
         lineCorners = (int) ((lineBottom - lineTop) * 0.45f);
         // 在RangeSeekBar确定尺寸时确定SeekBar按钮尺寸
-        seekBar.onSizeChanged(seekBarRadius, seekBarRadius, h, seekBarRadius, getContext());
+        seekBar.onSizeChanged(seekBarRadius, seekBarRadius, h, seekBarRadius);
     }
 
     @Override
@@ -325,6 +330,7 @@ public class SubsectionSeekBar extends View {
         int checkProgress = checkProgress(this.mProgress);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                isTouch = true;
                 if (onSubsectionSeekBarChangeListener != null) {
                     onSubsectionSeekBarChangeListener.onStartTrackingTouch(this);
                 }
@@ -336,6 +342,7 @@ public class SubsectionSeekBar extends View {
                 }
                 break;
             case MotionEvent.ACTION_UP:
+                isTouch = false;
                 this.mProgress = checkProgress;
                 updateSeekBar(this.mProgress);
                 if (onSubsectionSeekBarChangeListener != null && checkProgress != mProgress) {
@@ -435,26 +442,52 @@ public class SubsectionSeekBar extends View {
          * @param centerX SeekBar按钮的X中心在RangeSeekBar中的相对位置
          * @param centerY SeekBar按钮的Y中心在RangeSeekBar中的相对位置
          */
-        void onSizeChanged(int centerX, int centerY, int hSize, int radius, Context context) {
+        void onSizeChanged(int centerX, int centerY, int hSize, int radius) {
             this.centerX = centerX;
             this.centerY = centerY;
             this.radius = radius;
-            if (seekBarResIdNormal > 0) {
-                Log.e("main", "seekBarResIdNormal:" + seekBarResIdNormal);
-                Bitmap originalNormal = BitmapFactory.decodeResource(context.getResources(), seekBarResIdNormal);
-                if (originalNormal != null) {
-                    Matrix matrix = new Matrix();
-//                    float scaleWidth = ((float) hSize) / original.getWidth();
-                    float scaleHeight = ((float) hSize) / originalNormal.getHeight();
-                    //等比按高度缩放
-                    matrix.postScale(scaleHeight, scaleHeight);
-                    bmpNormal = Bitmap.createBitmap(originalNormal, 0, 0, originalNormal.getWidth(), originalNormal.getHeight(), matrix, true);
-                } else {
-                    initPaint();
-                }
+            if (seekBarResIdNormal > 0 && seekBarResIdPressed > 0) {
+//                Log.e("main", "seekBarResIdNormal:" + seekBarResIdNormal);
+//                Bitmap originalNormal = BitmapFactory.decodeResource(mContext.getResources(), seekBarResIdNormal);
+//                Bitmap originalPressed = BitmapFactory.decodeResource(mContext.getResources(), seekBarResIdPressed);
+//                if (originalNormal != null) {
+//                    Matrix matrix = new Matrix();
+////                    float scaleWidth = ((float) hSize) / original.getWidth();
+//                    float scaleHeight = ((float) hSize) / originalNormal.getHeight();
+//                    //等比按高度缩放
+//                    matrix.postScale(scaleHeight, scaleHeight);
+//                    bmpNormal = Bitmap.createBitmap(originalNormal, 0, 0, originalNormal.getWidth(), originalNormal.getHeight(), matrix, true);
+//                    if (originalPressed != null) {
+//                        matrix.postScale(scaleHeight, scaleHeight);
+//                        bmpPressed = Bitmap.createBitmap(originalPressed, 0, 0, originalPressed.getWidth(), originalPressed.getHeight(), matrix, true);
+//                    }
+//                } else {
+//                    initPaint();
+//                }
+                bmpNormal = creatBmp(hSize,seekBarResIdNormal);
+                bmpPressed = creatBmp(hSize,seekBarResIdPressed);
             } else {
                 initPaint();
             }
+        }
+
+        /**
+         * 把ID转换成bmp
+         *
+         * @param size 尺寸
+         * @param id   图片ID
+         * @return 转换成的Bitmap
+         */
+        private Bitmap creatBmp(int size, int id) {
+            Bitmap originalBmp = BitmapFactory.decodeResource(mContext.getResources(), id);
+            if (originalBmp != null) {
+                Matrix matrix = new Matrix();
+                float scaleHeight = ((float) size) / originalBmp.getHeight();
+                //等比按高度缩放
+                matrix.postScale(scaleHeight, scaleHeight);
+                return Bitmap.createBitmap(originalBmp, 0, 0, originalBmp.getWidth(), originalBmp.getHeight(), matrix, true);
+            }
+            return null;
         }
 
         private void initPaint() {
@@ -466,11 +499,21 @@ public class SubsectionSeekBar extends View {
             int offset = (int) (lineWidth * currPercent);
             canvas.save();
             canvas.translate(offset, 0);
-            if (bmpNormal != null) {
-                canvas.drawBitmap(bmpNormal, left, left, null);
+            //如果被点击
+            if (isTouch) {
+                if (bmpPressed != null) {
+                    canvas.drawBitmap(bmpPressed, left, left, null);
+                } else {
+                    canvas.translate(left, 0);
+                    canvas.drawCircle(centerX, centerY, radius, defaultPaint);
+                }
             } else {
-                canvas.translate(left, 0);
-                canvas.drawCircle(centerX, centerY, radius, defaultPaint);
+                if (bmpNormal != null) {
+                    canvas.drawBitmap(bmpNormal, left, left, null);
+                } else {
+                    canvas.translate(left, 0);
+                    canvas.drawCircle(centerX, centerY, radius, defaultPaint);
+                }
             }
             canvas.restore();
         }
