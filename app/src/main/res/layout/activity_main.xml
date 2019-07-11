@@ -9,7 +9,7 @@
 	android:padding="20dp"
 	tools:context=".MainActivity">
 
-	<com.jyn.subsectionprogressbar.SubsectionProgressBar
+	<com.jyn.subsectionprogressbar.SubsectionProgressBarDemo
 		android:id="@+id/subsectionpb"
 		android:layout_width="match_parent"
 		android:layout_height="10dp" />

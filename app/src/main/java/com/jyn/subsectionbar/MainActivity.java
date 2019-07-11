@@ -8,8 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.apkfuns.logutils.LogUtils;
-import com.jyn.subsectionprogressbar.SubsectionProgressBar;
 import com.jyn.subsectionseekbar.SeekBarBean;
 import com.jyn.subsectionseekbar.SubsectionSeekBar;
 
