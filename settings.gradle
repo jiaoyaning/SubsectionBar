@@ -1,1 +1,1 @@
-include ':app', ':SubsectionProgressBar', ':SubsectionSeekBar'
+include ':simple', ':SubsectionProgressBar', ':SubsectionSeekBar'
