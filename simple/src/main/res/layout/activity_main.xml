@@ -27,6 +27,15 @@
 		android:clickable="true"
 		android:focusable="true"
 		app:max="1000"
-		app:seekBarResId="@drawable/icon_seekbar" />
+		app:seekBarResId="@mipmap/icon_seekbar" />
 
+
+	<com.jyn.subsectionseekbar.SubsectionSeekBar
+		android:layout_width="match_parent"
+		android:layout_height="15dp"
+		android:layout_marginTop="20dp"
+		android:clickable="true"
+		android:focusable="true"
+		app:ratio="2"
+		app:max="1000" />
 </LinearLayout>

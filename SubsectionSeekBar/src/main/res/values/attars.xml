@@ -14,7 +14,5 @@
 		<attr name="secondaryProgressColor" format="color" />
 		<!--进度条高度比例 -->
 		<attr name="ratio" format="integer" />
-		<!--图标样式-->
-		<attr name="thumb" format="reference" />
 	</declare-styleable>
 </resources>

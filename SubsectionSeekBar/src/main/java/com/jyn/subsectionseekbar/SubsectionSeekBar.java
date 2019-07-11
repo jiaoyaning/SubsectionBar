@@ -9,7 +9,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -117,6 +119,11 @@ public class SubsectionSeekBar extends View {
      * @param progress 进度值
      */
     public void setProgress(int progress) {
+        if (progress < 0) {
+            throw new IllegalArgumentException(" progress 不可小于 0");
+        } else if (progress > mMax) {
+            progress = mMax;
+        }
         this.mProgress = progress;
         updateSeekBar(progress);
     }
@@ -360,11 +367,6 @@ public class SubsectionSeekBar extends View {
      */
     public void updateSeekBar(int progress) {
         // SeekBar按钮根据当前手指在拖动条上的滑动而滑动
-        if (progress < 0) {
-            throw new IllegalArgumentException(" progress 不可小于 0");
-        } else if (progress > mMax) {
-            progress = mMax;
-        }
         percent = progress * 1f / mMax;
         updateSeekBar(percent);
     }
@@ -445,11 +447,11 @@ public class SubsectionSeekBar extends View {
                     bmp = Bitmap.createBitmap(original, 0, 0, original.getWidth(), original.getHeight(), matrix, true);
                 } else {
                     defaultPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                    defaultPaint.setColor(Color.parseColor("#FF7000"));
+                    defaultPaint.setColor(getResources().getColor(R.color.orange));
                 }
             } else {
                 defaultPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                defaultPaint.setColor(Color.parseColor("#FF7000"));
+                defaultPaint.setColor(getResources().getColor(R.color.orange));
             }
         }
 
