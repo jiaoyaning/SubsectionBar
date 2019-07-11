@@ -23,44 +23,28 @@ import java.util.List;
 public class SubsectionSeekBar extends View {
     private Context mContext;
 
-    /**
-     * 默认总进度
-     */
+    // 默认总进度
     private int mMax = 1000;
 
-    /**
-     * 当前进度 相对max值而言
-     */
+    // 当前进度 相对max值而言
     private int mProgress = 0;
 
-    /**
-     * 第二条进度条值
-     */
+    // 第二条进度条值
     private int mSecondaryProgress = 0;
 
-    /**
-     * bar 背景色
-     */
+    // bar 背景色
     private int backgroundColor;
 
-    /**
-     * bar 进度条颜色
-     */
+    // bar 进度条颜色
     private int progressColor;
 
-    /**
-     * 第二进度条颜色
-     */
+    // 第二进度条颜色
     private int secondaryProgressColor;
 
-    /**
-     * 按钮图片ID
-     */
+    // 按钮图片ID
     private int seekBarResId;
 
-    /**
-     * 分段背景色值
-     */
+    // 分段背景色值
     private List<SeekBarBean> seekBarBeans = new ArrayList<>();
 
     /**
@@ -68,53 +52,35 @@ public class SubsectionSeekBar extends View {
      * 进度条高度 = 控件高度/ratio
      */
     private int ratio;
-    /**
-     * 当前进度百分比
-     */
+
+    // 当前进度百分比
     private float percent;
 
-    /**
-     * 背景色画笔
-     */
+    // 背景色画笔
     private Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-    /**
-     * SeekBar按钮的位置
-     */
+    // SeekBar按钮的位置
     private int lineTop, lineBottom, lineLeft, lineRight;
-    /**
-     * 圆角
-     */
+
+    // 圆角
     private int lineCorners;
 
-    /**
-     * Bar 的宽度
-     */
+    // Bar 的宽度
     private int lineWidth;
 
-    /**
-     * 总体背景色
-     */
+    // 总体背景色
     private RectF line = new RectF();
 
-    /**
-     * 已走完进度背景色
-     */
+    // 已走完进度背景色
     private RectF progressLine = new RectF();
 
-    /**
-     * 第二进度颜色
-     */
+    // 第二进度颜色
     private RectF secondaryProgressLine = new RectF();
 
-    /**
-     * 导航按钮
-     */
+    // 导航按钮
     private SeekBar seekBar = new SeekBar();
 
-    /**
-     * SubsectionSeekBar 监听
-     */
+    // SubsectionSeekBar 监听
     private onSubsectionSeekBarChangeListener onSubsectionSeekBarChangeListener;
 
     //===============参数方法分割线=============================================================
@@ -371,17 +337,36 @@ public class SubsectionSeekBar extends View {
         return true;
     }
 
+    /**
+     * 根据进度调整bar位置
+     *
+     * @param percent 0-1之间
+     */
     public void updateSeekBar(float percent) {
         // SeekBar按钮根据当前手指在拖动条上的滑动而滑动
+        if (percent < 0) {
+            throw new IllegalArgumentException(" percent 不可小于 0");
+        } else if (percent > 1) {
+            percent = 1;
+        }
         seekBar.slide(percent);
         this.invalidate();
     }
 
+    /**
+     * 根据进度调转bar位置
+     *
+     * @param progress 0-max 之间
+     */
     public void updateSeekBar(int progress) {
         // SeekBar按钮根据当前手指在拖动条上的滑动而滑动
+        if (progress < 0) {
+            throw new IllegalArgumentException(" progress 不可小于 0");
+        } else if (progress > mMax) {
+            progress = mMax;
+        }
         percent = progress * 1f / mMax;
-        seekBar.slide(percent);
-        this.invalidate();
+        updateSeekBar(percent);
     }
 
     /**
