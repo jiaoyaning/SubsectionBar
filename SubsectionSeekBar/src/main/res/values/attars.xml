@@ -5,7 +5,8 @@
 		<!--上限-->
 		<attr name="max" />
 		<!--导航按钮资源ID-->
-		<attr name="seekBarResId" format="reference" />
+		<attr name="seekBarResIdNormal" format="reference" />
+		<attr name="seekBarResIdPressed" format="reference" />
 		<!--背景条颜色-->
 		<attr name="backgroundColor" format="color" />
 		<!--第一个进度条颜色-->

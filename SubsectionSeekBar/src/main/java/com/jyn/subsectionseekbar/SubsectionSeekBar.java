@@ -44,7 +44,9 @@ public class SubsectionSeekBar extends View {
     private int secondaryProgressColor;
 
     // 按钮图片ID
-    private int seekBarResId;
+    private int seekBarResIdNormal;
+
+    private int seekBarResIdPressed;
 
     // 分段背景色值
     private List<SeekBarBean> seekBarBeans = new ArrayList<>();
@@ -97,7 +99,8 @@ public class SubsectionSeekBar extends View {
         this.mContext = context;
         TypedArray t = context.obtainStyledAttributes(attrs, R.styleable.SubsectionSeekBar);
         mMax = t.getInt(R.styleable.SubsectionSeekBar_max, 1000);
-        seekBarResId = t.getResourceId(R.styleable.SubsectionSeekBar_seekBarResId, 0);
+        seekBarResIdNormal = t.getResourceId(R.styleable.SubsectionSeekBar_seekBarResIdNormal, 0);
+        seekBarResIdPressed = t.getResourceId(R.styleable.SubsectionSeekBar_seekBarResIdPressed, 0);
         backgroundColor = t.getColor(R.styleable.SubsectionSeekBar_backgroundColor, Color.parseColor("#d9d9d9"));
         progressColor = t.getColor(R.styleable.SubsectionSeekBar_progressColor, Color.parseColor("#00B6D0"));
         secondaryProgressColor = t.getColor(R.styleable.SubsectionSeekBar_secondaryProgressColor, Color.parseColor("#98F5FF"));
@@ -210,7 +213,7 @@ public class SubsectionSeekBar extends View {
         //圆角
         lineCorners = (int) ((lineBottom - lineTop) * 0.45f);
         // 在RangeSeekBar确定尺寸时确定SeekBar按钮尺寸
-        seekBar.onSizeChanged(seekBarRadius, seekBarRadius, h, seekBarRadius, seekBarResId, getContext());
+        seekBar.onSizeChanged(seekBarRadius, seekBarRadius, h, seekBarRadius, getContext());
     }
 
     @Override
@@ -423,7 +426,8 @@ public class SubsectionSeekBar extends View {
         /**
          * 如果按钮是张图片
          */
-        Bitmap bmp;
+        Bitmap bmpNormal;
+        Bitmap bmpPressed;
 
         /**
          * 当RangeSeekBar尺寸发生变化时，SeekBar按钮尺寸随之变化
@@ -431,36 +435,39 @@ public class SubsectionSeekBar extends View {
          * @param centerX SeekBar按钮的X中心在RangeSeekBar中的相对位置
          * @param centerY SeekBar按钮的Y中心在RangeSeekBar中的相对位置
          */
-        void onSizeChanged(int centerX, int centerY, int hSize, int radius, int bmpResId, Context context) {
+        void onSizeChanged(int centerX, int centerY, int hSize, int radius, Context context) {
             this.centerX = centerX;
             this.centerY = centerY;
             this.radius = radius;
-            if (bmpResId > 0) {
-                Log.e("main", "bmpResId:" + bmpResId);
-                Bitmap original = BitmapFactory.decodeResource(context.getResources(), bmpResId);
-                if (original != null) {
+            if (seekBarResIdNormal > 0) {
+                Log.e("main", "seekBarResIdNormal:" + seekBarResIdNormal);
+                Bitmap originalNormal = BitmapFactory.decodeResource(context.getResources(), seekBarResIdNormal);
+                if (originalNormal != null) {
                     Matrix matrix = new Matrix();
 //                    float scaleWidth = ((float) hSize) / original.getWidth();
-                    float scaleHeight = ((float) hSize) / original.getHeight();
+                    float scaleHeight = ((float) hSize) / originalNormal.getHeight();
                     //等比按高度缩放
                     matrix.postScale(scaleHeight, scaleHeight);
-                    bmp = Bitmap.createBitmap(original, 0, 0, original.getWidth(), original.getHeight(), matrix, true);
+                    bmpNormal = Bitmap.createBitmap(originalNormal, 0, 0, originalNormal.getWidth(), originalNormal.getHeight(), matrix, true);
                 } else {
-                    defaultPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                    defaultPaint.setColor(getResources().getColor(R.color.orange));
+                    initPaint();
                 }
             } else {
-                defaultPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                defaultPaint.setColor(getResources().getColor(R.color.orange));
+                initPaint();
             }
+        }
+
+        private void initPaint() {
+            defaultPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            defaultPaint.setColor(getResources().getColor(R.color.orange));
         }
 
         void draw(Canvas canvas) {
             int offset = (int) (lineWidth * currPercent);
             canvas.save();
             canvas.translate(offset, 0);
-            if (bmp != null) {
-                canvas.drawBitmap(bmp, left, left, null);
+            if (bmpNormal != null) {
+                canvas.drawBitmap(bmpNormal, left, left, null);
             } else {
                 canvas.translate(left, 0);
                 canvas.drawCircle(centerX, centerY, radius, defaultPaint);
