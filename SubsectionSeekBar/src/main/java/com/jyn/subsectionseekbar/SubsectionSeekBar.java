@@ -447,25 +447,8 @@ public class SubsectionSeekBar extends View {
             this.centerY = centerY;
             this.radius = radius;
             if (seekBarResIdNormal > 0 && seekBarResIdPressed > 0) {
-//                Log.e("main", "seekBarResIdNormal:" + seekBarResIdNormal);
-//                Bitmap originalNormal = BitmapFactory.decodeResource(mContext.getResources(), seekBarResIdNormal);
-//                Bitmap originalPressed = BitmapFactory.decodeResource(mContext.getResources(), seekBarResIdPressed);
-//                if (originalNormal != null) {
-//                    Matrix matrix = new Matrix();
-////                    float scaleWidth = ((float) hSize) / original.getWidth();
-//                    float scaleHeight = ((float) hSize) / originalNormal.getHeight();
-//                    //等比按高度缩放
-//                    matrix.postScale(scaleHeight, scaleHeight);
-//                    bmpNormal = Bitmap.createBitmap(originalNormal, 0, 0, originalNormal.getWidth(), originalNormal.getHeight(), matrix, true);
-//                    if (originalPressed != null) {
-//                        matrix.postScale(scaleHeight, scaleHeight);
-//                        bmpPressed = Bitmap.createBitmap(originalPressed, 0, 0, originalPressed.getWidth(), originalPressed.getHeight(), matrix, true);
-//                    }
-//                } else {
-//                    initPaint();
-//                }
-                bmpNormal = creatBmp(hSize,seekBarResIdNormal);
-                bmpPressed = creatBmp(hSize,seekBarResIdPressed);
+                bmpNormal = creatBmp(hSize, seekBarResIdNormal);
+                bmpPressed = creatBmp(hSize, seekBarResIdPressed);
             } else {
                 initPaint();
             }
@@ -490,6 +473,7 @@ public class SubsectionSeekBar extends View {
             return null;
         }
 
+        //初始化画笔
         private void initPaint() {
             defaultPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             defaultPaint.setColor(getResources().getColor(R.color.orange));
