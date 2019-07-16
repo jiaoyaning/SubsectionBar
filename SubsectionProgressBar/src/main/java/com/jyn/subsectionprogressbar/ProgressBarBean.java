@@ -2,10 +2,6 @@ package com.jyn.subsectionprogressbar;
 
 public class ProgressBarBean {
     /**
-     * 颜色 RGB值
-     */
-    private int color;
-    /**
      * 起点
      */
     private int origin;
@@ -13,17 +9,15 @@ public class ProgressBarBean {
      * 终点
      */
     private int terminus;
-
     /**
-     * 是否要跳过
+     * 颜色 RGB值
      */
-    private boolean isSkip;
+    private int color;
 
-    public int getColor() {
-        return color;
-    }
 
-    public void setColor(int color) {
+    public ProgressBarBean(int origin, int terminus, int color) {
+        this.origin = origin;
+        this.terminus = terminus;
         this.color = color;
     }
 
@@ -43,11 +37,11 @@ public class ProgressBarBean {
         this.terminus = terminus;
     }
 
-    public boolean isSkip() {
-        return isSkip;
+    public int getColor() {
+        return color;
     }
 
-    public void setSkip(boolean skip) {
-        isSkip = skip;
+    public void setColor(int color) {
+        this.color = color;
     }
 }
