@@ -18,23 +18,36 @@
         android:id="@+id/seekbar_tx"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:text="progress: 0" />
 
     <com.jyn.subsectionseekbar.SubsectionSeekBar
-        android:id="@+id/range_seek_bar"
+        android:id="@+id/seek_bar_bmp"
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:clickable="true"
         android:focusable="true"
         app:max="1000"
+        app:secondaryProgressColor="@color/blue3"
         app:seekBarResIdNormal="@mipmap/icon_seekbar_normal"
         app:seekBarResIdPressed="@mipmap/icon_seekbar_pressed" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="设置某一段进度不可被选着" />
+
+    <TextView
+        android:id="@+id/seekbar_tx2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="progress: 0" />
+
     <com.jyn.subsectionseekbar.SubsectionSeekBar
+        android:id="@+id/seek_bar"
         android:layout_width="match_parent"
         android:layout_height="15dp"
-        android:layout_marginTop="20dp"
         android:clickable="true"
         android:focusable="true"
         app:max="1000"

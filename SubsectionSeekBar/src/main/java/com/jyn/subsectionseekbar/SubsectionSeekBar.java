@@ -292,7 +292,7 @@ public class SubsectionSeekBar extends View {
      * @param canvas 画布
      */
     private void drawSecondaryProgress(Canvas canvas) {
-        mBackgroundPaint.setColor(Color.parseColor("#98F5FF"));
+        mBackgroundPaint.setColor(secondaryProgressColor);
         int secondaryprogressLineWidth = (int) (mSecondaryProgress * 1f / mMax * lineWidth);
         secondaryProgressLine.set(lineLeft, lineTop, secondaryprogressLineWidth + lineLeft, lineBottom);
         canvas.drawRoundRect(secondaryProgressLine, lineCorners, lineCorners, mBackgroundPaint);
