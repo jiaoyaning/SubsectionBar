@@ -1,52 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:gravity="center_horizontal"
-	android:orientation="vertical"
-	android:padding="20dp"
-	tools:context=".MainActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:context=".MainActivity">
 
-	<com.jyn.subsectionprogressbar.SubsectionProgressBarDemo
-		android:id="@+id/subsectionpb"
-		android:layout_width="match_parent"
-		android:layout_height="10dp" />
+    <com.jyn.subsectionprogressbar.SubsectionProgressBarDemo
+        android:id="@+id/subsectionpb"
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
 
-	<TextView
-		android:id="@+id/seekbar_tx"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="10dp" />
+    <TextView
+        android:id="@+id/seekbar_tx"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="progress: 0" />
 
-	<com.jyn.subsectionseekbar.SubsectionSeekBar
-		android:id="@+id/range_seek_bar"
-		android:layout_width="match_parent"
-		android:layout_height="20dp"
-		android:clickable="true"
-		android:focusable="true"
-		app:max="1000"
-		app:seekBarResIdNormal="@mipmap/icon_seekbar_normal"
-		app:seekBarResIdPressed="@mipmap/icon_seekbar_pressed" />
+    <com.jyn.subsectionseekbar.SubsectionSeekBar
+        android:id="@+id/range_seek_bar"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:max="1000"
+        app:seekBarResIdNormal="@mipmap/icon_seekbar_normal"
+        app:seekBarResIdPressed="@mipmap/icon_seekbar_pressed" />
 
-
-	<com.jyn.subsectionseekbar.SubsectionSeekBar
-		android:layout_width="match_parent"
-		android:layout_height="20dp"
-		android:layout_marginTop="20dp"
-		android:clickable="true"
-		android:focusable="true"
-		app:max="1000"
-		app:seekBarResIdNormal="@drawable/seek_thumb_normal"
-		app:seekBarResIdPressed="@drawable/seek_thumb_pressed" />
-
-	<com.jyn.subsectionseekbar.SubsectionSeekBar
-		android:layout_width="match_parent"
-		android:layout_height="15dp"
-		android:layout_marginTop="20dp"
-		android:clickable="true"
-		android:focusable="true"
-		app:max="1000"
-		app:ratio="2" />
+    <com.jyn.subsectionseekbar.SubsectionSeekBar
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:layout_marginTop="20dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:max="1000"
+        app:ratio="2"
+        app:seekBarColorNormal="@color/coral"
+        app:seekBarColorPressed="@color/orangered" />
 </LinearLayout>

@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<attr name="max" format="integer" />
-	<declare-styleable name="SubsectionSeekBar">
-		<!--上限-->
-		<attr name="max" />
-		<!--导航按钮资源ID-->
-		<attr name="seekBarResIdNormal" format="reference" />
-		<attr name="seekBarResIdPressed" format="reference" />
-		<!--背景条颜色-->
-		<attr name="backgroundColor" format="color" />
-		<!--第一个进度条颜色-->
-		<attr name="progressColor" format="color" />
-		<!--第二个进度条颜色-->
-		<attr name="secondaryProgressColor" format="color" />
-		<!--进度条高度比例 -->
-		<attr name="ratio" format="integer" />
-	</declare-styleable>
+    <attr name="max" format="integer" />
+    <declare-styleable name="SubsectionSeekBar">
+        <!--上限-->
+        <attr name="max" />
+        <!--导航按钮资源ID-->
+        <attr name="seekBarResIdNormal" format="reference" />
+        <attr name="seekBarResIdPressed" format="reference" />
+        <!--背景条默认颜色-->
+        <attr name="backgroundColor" format="color" />
+        <!--第一个进度条默认颜色-->
+        <attr name="progressColor" format="color" />
+        <!--第二个进度条默认颜色-->
+        <attr name="secondaryProgressColor" format="color" />
+        <!--进度条高度比例 -->
+        <attr name="ratio" format="integer" />
+
+        <!--&lt;!&ndash;seekbar line 高度&ndash;&gt;-->
+        <!--<attr name="lineHeight" format="dimension" />-->
+
+        <!--导航按钮 颜色-->
+        <attr name="seekBarColorNormal" format="color" />
+        <attr name="seekBarColorPressed" format="color" />
+
+    </declare-styleable>
 </resources>

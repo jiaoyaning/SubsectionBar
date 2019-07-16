@@ -9,15 +9,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.PixelFormat;
 import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-
-import com.apkfuns.logutils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +30,10 @@ public class SubsectionSeekBar extends View {
     // 第二条进度条值
     private int mSecondaryProgress = 0;
 
-    // bar 背景色
+    // bar 默认背景色
     private int backgroundColor;
 
-    // bar 进度条颜色
+    // bar 默认进度条颜色
     private int progressColor;
 
     // 第二进度条颜色
@@ -45,8 +41,12 @@ public class SubsectionSeekBar extends View {
 
     // 按钮图片ID
     private int seekBarResIdNormal;
-
     private int seekBarResIdPressed;
+
+    // 按钮颜色
+    private int seekBarColorNormal;
+    private int seekBarColorPressed;
+
 
     /**
      * 判断是否被点击
@@ -110,6 +110,9 @@ public class SubsectionSeekBar extends View {
         progressColor = t.getColor(R.styleable.SubsectionSeekBar_progressColor, Color.parseColor("#00B6D0"));
         secondaryProgressColor = t.getColor(R.styleable.SubsectionSeekBar_secondaryProgressColor, Color.parseColor("#98F5FF"));
         ratio = t.getInteger(R.styleable.SubsectionSeekBar_ratio, 4);
+
+        seekBarColorNormal = t.getColor(R.styleable.SubsectionSeekBar_seekBarColorNormal, Color.parseColor("#FF7F50"));
+        seekBarColorPressed = t.getColor(R.styleable.SubsectionSeekBar_seekBarColorPressed, Color.parseColor("#FF4500"));
     }
 
     /**
@@ -428,13 +431,14 @@ public class SubsectionSeekBar extends View {
         /**
          * 导航圆圈的bar
          */
-        private Paint defaultPaint;
+        private Paint paintNormal;
+        private Paint paintPressed;
 
         /**
          * 如果按钮是张图片
          */
-        Bitmap bmpNormal;
-        Bitmap bmpPressed;
+        private Bitmap bmpNormal;
+        private Bitmap bmpPressed;
 
         /**
          * 当RangeSeekBar尺寸发生变化时，SeekBar按钮尺寸随之变化
@@ -475,8 +479,10 @@ public class SubsectionSeekBar extends View {
 
         //初始化画笔
         private void initPaint() {
-            defaultPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            defaultPaint.setColor(getResources().getColor(R.color.orange));
+            paintNormal = new Paint(Paint.ANTI_ALIAS_FLAG);
+            paintNormal.setColor(seekBarColorNormal);
+            paintPressed = new Paint(Paint.ANTI_ALIAS_FLAG);
+            paintPressed.setColor(seekBarColorPressed);
         }
 
         void draw(Canvas canvas) {
@@ -489,14 +495,14 @@ public class SubsectionSeekBar extends View {
                     canvas.drawBitmap(bmpPressed, left, left, null);
                 } else {
                     canvas.translate(left, 0);
-                    canvas.drawCircle(centerX, centerY, radius, defaultPaint);
+                    canvas.drawCircle(centerX, centerY, radius, paintPressed);
                 }
             } else {
                 if (bmpNormal != null) {
                     canvas.drawBitmap(bmpNormal, left, left, null);
                 } else {
                     canvas.translate(left, 0);
-                    canvas.drawCircle(centerX, centerY, radius, defaultPaint);
+                    canvas.drawCircle(centerX, centerY, radius, paintNormal);
                 }
             }
             canvas.restore();
