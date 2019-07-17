@@ -297,9 +297,6 @@ public class SubsectionProgressBar extends View {
         canvas.drawRoundRect(progressLine, lineCorners, lineCorners, mBackgroundPaint);
     }
 
-    /**
-     * 点击监听
-     */
 //    @SuppressLint("ClickableViewAccessibility")
 //    @Override
 //    public boolean onTouchEvent(MotionEvent event) {

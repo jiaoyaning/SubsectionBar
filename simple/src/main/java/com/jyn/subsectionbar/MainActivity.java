@@ -1,6 +1,7 @@
 package com.jyn.subsectionbar;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
@@ -89,18 +90,18 @@ public class MainActivity extends AppCompatActivity {
 
     public List<SeekBarBean> getBmpSeekBars() {
         List<SeekBarBean> seekBarBeans = new ArrayList<>();
-        seekBarBeans.add(new SeekBarBean(getResources().getColor(R.color.red1),
+        seekBarBeans.add(new SeekBarBean(ContextCompat.getColor(this, R.color.red1),
                 200, 300, false));
-        seekBarBeans.add(new SeekBarBean(getResources().getColor(R.color.blue2),
+        seekBarBeans.add(new SeekBarBean(ContextCompat.getColor(this, R.color.blue2),
                 600, 1000, false));
         return seekBarBeans;
     }
 
     public List<SeekBarBean> getSeekBars() {
         List<SeekBarBean> seekBarBeans = new ArrayList<>();
-        seekBarBeans.add(new SeekBarBean(getResources().getColor(R.color.blue1),
+        seekBarBeans.add(new SeekBarBean(ContextCompat.getColor(this, R.color.blue1),
                 300, 400, true));
-        seekBarBeans.add(new SeekBarBean(getResources().getColor(R.color.red1),
+        seekBarBeans.add(new SeekBarBean(ContextCompat.getColor(this, R.color.red1),
                 500, 800, false));
         return seekBarBeans;
     }
