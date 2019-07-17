@@ -1,6 +1,7 @@
 # SubsectionBar
 Android 多背景色分段ProgressBar & 多背景色分段SeekBar
 ## 效果图
+![Screenshot](screenshot/screenshot.gif)  
 ![Screenshot](screenshot/screenshot.png)
 
 ## 属性
