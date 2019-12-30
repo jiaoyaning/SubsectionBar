@@ -11,6 +11,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -372,6 +373,7 @@ public class SubsectionSeekBar extends View {
     public boolean onTouchEvent(MotionEvent event) {
         //点击位置坐标 x
         float x = event.getX();
+        Log.i("main", "x:" + x);
         // bar的位置
         if (x <= lineLeft) {
             percent = 0;
@@ -391,6 +393,9 @@ public class SubsectionSeekBar extends View {
                 if (onSubsectionSeekBarChangeListener != null) {
                     onSubsectionSeekBarChangeListener.onStartTrackingTouch(this);
                 }
+                if (checkKeyBar(x)) {
+                    return true;
+                }
             case MotionEvent.ACTION_MOVE:
                 this.mProgress = checkProgress;
                 updateSeekBar(this.mProgress);
@@ -400,8 +405,11 @@ public class SubsectionSeekBar extends View {
                 break;
             case MotionEvent.ACTION_UP:
                 isTouch = false;
-                this.mProgress = checkProgress;
-                updateSeekBar(this.mProgress);
+                if (checkKeyBar(x)) {
+                    return true;
+                }
+//                this.mProgress = checkProgress;
+//                updateSeekBar(this.mProgress);
                 if (onSubsectionSeekBarChangeListener != null && checkProgress != mProgress) {
                     onSubsectionSeekBarChangeListener.onStopTrackingTouch(this);
                     onSubsectionSeekBarChangeListener.onProgressChanged(this, this.mProgress, true);
@@ -458,6 +466,19 @@ public class SubsectionSeekBar extends View {
             }
         }
         return progress;
+    }
+
+    public boolean checkKeyBar(float x) {
+        for (int i = 0; i < keybars.size(); i++) {
+            int offset = (int) (lineWidth * keybars.get(i) / mMax); //左边距离
+            if (x > offset && x < offset + keyBarHeight * 2) {
+                if (onSubsectionSeekBarChangeListener != null) {
+                    onSubsectionSeekBarChangeListener.onKeyTouch(i, offset + keyBarHeight);
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     public class SeekBar {
@@ -611,5 +632,7 @@ public class SubsectionSeekBar extends View {
          * @param view 本view
          */
         void onStopTrackingTouch(View view);
+
+        void onKeyTouch(int person, float x);
     }
 }

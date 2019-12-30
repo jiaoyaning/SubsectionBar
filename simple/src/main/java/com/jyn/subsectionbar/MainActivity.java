@@ -58,6 +58,10 @@ public class MainActivity extends AppCompatActivity {
             public void onStopTrackingTouch(View view) {
 
             }
+
+            @Override
+            public void onKeyTouch(int person, float x) {
+            }
         });
 
         bmpSeekBar.setSectionBeans(getBmpSeekBars());
@@ -84,13 +88,16 @@ public class MainActivity extends AppCompatActivity {
             public void onStopTrackingTouch(View view) {
 
             }
+
+            @Override
+            public void onKeyTouch(int person, float x) {
+            }
         });
 
         SeekBar seekBar1 = findViewById(R.id.native_seek_bar);
         seekBar1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                Log.i("main", "progress:" + progress);
             }
 
             @Override
