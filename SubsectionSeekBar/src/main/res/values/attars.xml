@@ -13,16 +13,19 @@
         <attr name="progressColor" format="color" />
         <!--第二个进度条默认颜色-->
         <attr name="secondaryProgressColor" format="color" />
-        <!--进度条高度比例 -->
+        <!--进度条高度 -->
         <attr name="seekBarHeight" format="dimension" />
 
         <!--导航按钮 颜色-->
         <attr name="seekBarColorNormal" format="color" />
         <attr name="seekBarColorPressed" format="color" />
 
-        <!--导航按钮 颜色-->
+        <!--key按钮 颜色-->
         <attr name="KeyBarColorNormal" format="color" />
         <attr name="KeyBarColorPressed" format="color" />
+
+        <!--key点高度 -->
+        <attr name="keyBarHeight" format="dimension" />
 
     </declare-styleable>
 </resources>

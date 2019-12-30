@@ -55,17 +55,30 @@ public class SubsectionSeekBar extends View {
     // 分段背景色值
     private List<SectionBean> sectionBeans = new ArrayList<>();
 
+    //key点
+    private List<Integer> keybars = new ArrayList<>();
+
     /**
-     * 进度条高度比例
-     * 进度条高度 = 控件高度/seekbarHeight
+     * 进度条的高度
      */
-    private float seekbarHeight;
+    private float seekBarHeight;
+
+    /**
+     * view的半径
+     */
+    private int seekBarRadius;
+
+    private float keyBarHeight;
+
 
     // 当前进度百分比
     private float percent;
 
     // 背景色画笔
     private Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+    // key点画笔
+    private Paint mKeyBarPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     // SeekBar按钮的位置
     private float lineTop, lineBottom, lineLeft, lineRight;
@@ -108,8 +121,8 @@ public class SubsectionSeekBar extends View {
         backgroundColor = t.getColor(R.styleable.SubsectionSeekBar_backgroundColor, Color.parseColor("#d9d9d9"));
         progressColor = t.getColor(R.styleable.SubsectionSeekBar_progressColor, Color.parseColor("#00B6D0"));
         secondaryProgressColor = t.getColor(R.styleable.SubsectionSeekBar_secondaryProgressColor, Color.parseColor("#98F5FF"));
-        seekbarHeight = t.getDimension(R.styleable.SubsectionSeekBar_seekBarHeight, 0f);
-
+        seekBarHeight = t.getDimension(R.styleable.SubsectionSeekBar_seekBarHeight, 0f);
+        keyBarHeight = t.getDimension(R.styleable.SubsectionSeekBar_keyBarHeight, 0f);
         seekBarColorNormal = t.getColor(R.styleable.SubsectionSeekBar_seekBarColorNormal, Color.parseColor("#FF7F50"));
         seekBarColorPressed = t.getColor(R.styleable.SubsectionSeekBar_seekBarColorPressed, Color.parseColor("#FF4500"));
     }
@@ -171,6 +184,12 @@ public class SubsectionSeekBar extends View {
         this.invalidate();
     }
 
+    public void setKayBars(List<Integer> keybars) {
+        this.keybars.clear();
+        this.keybars.addAll(keybars);
+        this.invalidate();
+    }
+
     /**
      * 设置监听
      *
@@ -201,7 +220,7 @@ public class SubsectionSeekBar extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        int seekBarRadius = h / 2;
+        seekBarRadius = h / 2;
         /*
          * 属性 left right top bottom 描述了SeekBar按钮的位置
          * 蓝后根据它们预先设置确定出 RectF line 背景的三维
@@ -209,15 +228,22 @@ public class SubsectionSeekBar extends View {
          */
         lineLeft = seekBarRadius;
         lineRight = w - seekBarRadius;
-//        lineTop = seekBarRadius - seekBarRadius / seekbarHeight;
-//        lineBottom = seekBarRadius + seekBarRadius / seekbarHeight;
-        if (seekbarHeight > h || seekbarHeight == 0) {
-            seekbarHeight = seekBarRadius;
+//        lineTop = seekBarRadius - seekBarRadius / seekBarHeight;
+//        lineBottom = seekBarRadius + seekBarRadius / seekBarHeight;
+        if (seekBarHeight > h || seekBarHeight == 0) {
+            seekBarHeight = seekBarRadius;
         } else {
-            seekbarHeight = seekbarHeight / 2;
+            seekBarHeight = seekBarHeight / 2;
         }
-        lineTop = seekBarRadius - seekbarHeight;
-        lineBottom = seekBarRadius + seekbarHeight;
+
+        if (keyBarHeight > h || keyBarHeight == 0) {
+            keyBarHeight = seekBarRadius;
+        } else {
+            keyBarHeight = keyBarHeight / 2;
+        }
+
+        lineTop = seekBarRadius - seekBarHeight;
+        lineBottom = seekBarRadius + seekBarHeight;
 
         //progress宽度
         lineWidth = lineRight - lineLeft;
@@ -234,6 +260,11 @@ public class SubsectionSeekBar extends View {
         super.onDraw(canvas);
         mBackgroundPaint.setStyle(Paint.Style.FILL);
         mBackgroundPaint.setAntiAlias(true);
+
+        mKeyBarPaint.setStyle(Paint.Style.FILL);
+        mKeyBarPaint.setColor(Color.parseColor("#0000FF"));
+        mKeyBarPaint.setAntiAlias(true);
+
         drawBackground(canvas);
         if (sectionBeans != null && sectionBeans.size() > 0) {
             for (int i = 0; i < sectionBeans.size(); i++) {
@@ -242,6 +273,13 @@ public class SubsectionSeekBar extends View {
         }
         drawSecondaryProgress(canvas);
         drawProgress(canvas);
+
+        if (keybars != null && keybars.size() > 0) {
+            for (int i = 0; i < keybars.size(); i++) {
+                drawKeyBar(canvas, keybars.get(i));
+            }
+        }
+
         // 绘制按钮
         seekBar.draw(canvas);
     }
@@ -289,6 +327,17 @@ public class SubsectionSeekBar extends View {
                     "2：起点大于终点；\n" +
                     "3：终点小于总长");
         }
+    }
+
+    /**
+     * 绘制key点
+     *
+     * @param canvas 画布
+     * @param point  key点位置
+     */
+    private void drawKeyBar(Canvas canvas, int point) {
+        int offset = (int) (lineWidth * point / mMax); //左边距离
+        canvas.drawCircle(keyBarHeight + offset, seekBarRadius, keyBarHeight, mKeyBarPaint);
     }
 
     /**

@@ -59,11 +59,15 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
         bmpSeekBar.setSectionBeans(getBmpSeekBars());
         bmpSeekBar.setSecondaryProgress(500);
         SubsectionSeekBar seekBar = findViewById(R.id.seek_bar);
         final TextView seekbarTx2 = findViewById(R.id.seekbar_tx2);
+
         seekBar.setSectionBeans(getSeekBars());
+        seekBar.setKayBars(getKeyBar());
+
         seekBar.setOnSubsectionSeekBarChangeListener(new SubsectionSeekBar.onSubsectionSeekBarChangeListener() {
             @SuppressLint("SetTextI18n")
             @Override
@@ -129,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
     public List<SectionBean> getSeekBars() {
         List<SectionBean> sectionBeans = new ArrayList<>();
         sectionBeans.add(new SectionBean(ContextCompat.getColor(this, R.color.blue1),
-                300, 400, true));
+                300, 400, false));
         sectionBeans.add(new SectionBean(ContextCompat.getColor(this, R.color.red1),
                 500, 800, false));
         return sectionBeans;
