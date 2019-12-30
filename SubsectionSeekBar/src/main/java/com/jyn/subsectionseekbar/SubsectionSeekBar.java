@@ -391,15 +391,15 @@ public class SubsectionSeekBar extends View {
         int checkProgress = checkProgress(this.mProgress);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                isTouch = true;
-                if (onSubsectionSeekBarChangeListener != null) {
-                    onSubsectionSeekBarChangeListener.onStartTrackingTouch(this);
-                }
                 if (checkKeyBar(x)) {
                     isKey = true;
                     return true;
                 }
                 isKey = false;
+                isTouch = true;
+                if (onSubsectionSeekBarChangeListener != null) {
+                    onSubsectionSeekBarChangeListener.onStartTrackingTouch(this);
+                }
             case MotionEvent.ACTION_MOVE:
                 if (isKey && checkKeyBar(x)) {
                     return true;
@@ -412,12 +412,12 @@ public class SubsectionSeekBar extends View {
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                isTouch = false;
                 if (checkKeyBar(x)) {
                     return true;
                 }
+                isTouch = false;
 //                this.mProgress = checkProgress;
-//                updateSeekBar(this.mProgress);
+                updateSeekBar(this.mProgress);
                 if (onSubsectionSeekBarChangeListener != null && checkProgress != mProgress) {
                     onSubsectionSeekBarChangeListener.onStopTrackingTouch(this);
                     onSubsectionSeekBarChangeListener.onProgressChanged(this, this.mProgress, true);
