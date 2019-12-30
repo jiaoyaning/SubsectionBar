@@ -53,6 +53,8 @@ public class SubsectionSeekBar extends View {
      */
     private boolean isTouch = false;
 
+    private boolean isKey = false;
+
     // 分段背景色值
     private List<SectionBean> sectionBeans = new ArrayList<>();
 
@@ -394,9 +396,15 @@ public class SubsectionSeekBar extends View {
                     onSubsectionSeekBarChangeListener.onStartTrackingTouch(this);
                 }
                 if (checkKeyBar(x)) {
+                    isKey = true;
                     return true;
                 }
+                isKey = false;
             case MotionEvent.ACTION_MOVE:
+                if (isKey && checkKeyBar(x)) {
+                    return true;
+                }
+                isKey = false;
                 this.mProgress = checkProgress;
                 updateSeekBar(this.mProgress);
                 if (onSubsectionSeekBarChangeListener != null) {
