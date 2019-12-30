@@ -14,7 +14,7 @@
         <!--第二个进度条默认颜色-->
         <attr name="secondaryProgressColor" format="color" />
         <!--进度条高度比例 -->
-        <attr name="ratio" format="integer" />
+        <attr name="seekBarHeight" format="dimension" />
 
         <!--&lt;!&ndash;seekbar line 高度&ndash;&gt;-->
         <!--<attr name="lineHeight" format="dimension" />-->

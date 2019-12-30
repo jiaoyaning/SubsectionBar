@@ -17,7 +17,7 @@
         android:focusable="true"
         app:max="1000"
         app:progressColor="@color/orangered"
-        app:ratio="2" />
+        app:seekBarHeight="10dp" />
 
     <TextView
         android:id="@+id/seekbar_tx"
@@ -34,6 +34,7 @@
         android:focusable="true"
         app:max="1000"
         app:secondaryProgressColor="@color/blue3"
+        app:seekBarHeight="10dp"
         app:seekBarResIdNormal="@mipmap/icon_seekbar_normal"
         app:seekBarResIdPressed="@mipmap/icon_seekbar_pressed" />
 
@@ -56,7 +57,6 @@
         android:clickable="true"
         android:focusable="true"
         app:max="1000"
-        app:ratio="2"
         app:seekBarColorNormal="@color/coral"
         app:seekBarColorPressed="@color/orangered" />
 
@@ -67,7 +67,7 @@
         android:clickable="true"
         android:focusable="true"
         app:max="1000"
-        app:ratio="1"
         app:seekBarColorNormal="@color/coral"
-        app:seekBarColorPressed="@color/orangered" />
+        app:seekBarColorPressed="@color/orangered"
+        app:seekBarHeight="10dp" />
 </LinearLayout>

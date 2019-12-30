@@ -57,9 +57,9 @@ public class SubsectionSeekBar extends View {
 
     /**
      * 进度条高度比例
-     * 进度条高度 = 控件高度/ratio
+     * 进度条高度 = 控件高度/seekbarHeight
      */
-    private int ratio;
+    private float seekbarHeight;
 
     // 当前进度百分比
     private float percent;
@@ -68,13 +68,13 @@ public class SubsectionSeekBar extends View {
     private Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     // SeekBar按钮的位置
-    private int lineTop, lineBottom, lineLeft, lineRight;
+    private float lineTop, lineBottom, lineLeft, lineRight;
 
     // 圆角
     private int lineCorners;
 
     // Bar 的宽度
-    private int lineWidth;
+    private float lineWidth;
 
     // 总体背景色
     private RectF line = new RectF();
@@ -108,7 +108,7 @@ public class SubsectionSeekBar extends View {
         backgroundColor = t.getColor(R.styleable.SubsectionSeekBar_backgroundColor, Color.parseColor("#d9d9d9"));
         progressColor = t.getColor(R.styleable.SubsectionSeekBar_progressColor, Color.parseColor("#00B6D0"));
         secondaryProgressColor = t.getColor(R.styleable.SubsectionSeekBar_secondaryProgressColor, Color.parseColor("#98F5FF"));
-        ratio = t.getInteger(R.styleable.SubsectionSeekBar_ratio, 4);
+        seekbarHeight = t.getDimension(R.styleable.SubsectionSeekBar_seekBarHeight, 0f);
 
         seekBarColorNormal = t.getColor(R.styleable.SubsectionSeekBar_seekBarColorNormal, Color.parseColor("#FF7F50"));
         seekBarColorPressed = t.getColor(R.styleable.SubsectionSeekBar_seekBarColorPressed, Color.parseColor("#FF4500"));
@@ -209,8 +209,15 @@ public class SubsectionSeekBar extends View {
          */
         lineLeft = seekBarRadius;
         lineRight = w - seekBarRadius;
-        lineTop = seekBarRadius - seekBarRadius / ratio;
-        lineBottom = seekBarRadius + seekBarRadius / ratio;
+//        lineTop = seekBarRadius - seekBarRadius / seekbarHeight;
+//        lineBottom = seekBarRadius + seekBarRadius / seekbarHeight;
+        if (seekbarHeight > h || seekbarHeight == 0) {
+            seekbarHeight = seekBarRadius;
+        } else {
+            seekbarHeight = seekbarHeight / 2;
+        }
+        lineTop = seekBarRadius - seekbarHeight;
+        lineBottom = seekBarRadius + seekbarHeight;
 
         //progress宽度
         lineWidth = lineRight - lineLeft;
