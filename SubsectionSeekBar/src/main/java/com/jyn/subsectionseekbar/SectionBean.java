@@ -3,7 +3,7 @@ package com.jyn.subsectionseekbar;
 /**
  * 颜色分段bean类
  */
-public class SeekBarBean {
+public class SectionBean {
     /**
      * 颜色 RGB值
      */
@@ -22,7 +22,7 @@ public class SeekBarBean {
      */
     private boolean isSkip;
 
-    public SeekBarBean(int color, int origin, int terminus, boolean isSkip) {
+    public SectionBean(int color, int origin, int terminus, boolean isSkip) {
         this.color = color;
         this.origin = origin;
         this.terminus = terminus;

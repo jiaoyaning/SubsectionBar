@@ -53,7 +53,7 @@ public class SubsectionSeekBar extends View {
     private boolean isTouch = false;
 
     // 分段背景色值
-    private List<SeekBarBean> seekBarBeans = new ArrayList<>();
+    private List<SectionBean> sectionBeans = new ArrayList<>();
 
     /**
      * 进度条高度比例
@@ -165,9 +165,9 @@ public class SubsectionSeekBar extends View {
         this.secondaryProgressColor = secondaryProgressColor;
     }
 
-    public void setSeekBarBeans(List<SeekBarBean> seekBarBeans) {
-        this.seekBarBeans.clear();
-        this.seekBarBeans.addAll(seekBarBeans);
+    public void setSectionBeans(List<SectionBean> sectionBeans) {
+        this.sectionBeans.clear();
+        this.sectionBeans.addAll(sectionBeans);
         this.invalidate();
     }
 
@@ -235,9 +235,9 @@ public class SubsectionSeekBar extends View {
         mBackgroundPaint.setStyle(Paint.Style.FILL);
         mBackgroundPaint.setAntiAlias(true);
         drawBackground(canvas);
-        if (seekBarBeans != null && seekBarBeans.size() > 0) {
-            for (int i = 0; i < seekBarBeans.size(); i++) {
-                drawSubsectionBean(canvas, seekBarBeans.get(i));
+        if (sectionBeans != null && sectionBeans.size() > 0) {
+            for (int i = 0; i < sectionBeans.size(); i++) {
+                drawSubsectionBean(canvas, sectionBeans.get(i));
             }
         }
         drawSecondaryProgress(canvas);
@@ -266,19 +266,19 @@ public class SubsectionSeekBar extends View {
      * 绘制分段背景
      *
      * @param canvas      画布
-     * @param seekBarBean 分段背景bean类
+     * @param sectionBean 分段背景bean类
      */
-    private void drawSubsectionBean(Canvas canvas, SeekBarBean seekBarBean) {
+    private void drawSubsectionBean(Canvas canvas, SectionBean sectionBean) {
         //起点
-        int origin = seekBarBean.getOrigin();
+        int origin = sectionBean.getOrigin();
         //终点
-        int terminus = seekBarBean.getTerminus();
+        int terminus = sectionBean.getTerminus();
         if (0 <= origin && origin < terminus & terminus <= mMax) {
             //起点位置 绘制
             int originLeft = (int) (origin * 1f / mMax * lineWidth);
             //终点位置 绘制
             int terminusRight = (int) (terminus * 1f / mMax * lineWidth);
-            mBackgroundPaint.setColor(seekBarBean.getColor());
+            mBackgroundPaint.setColor(sectionBean.getColor());
             RectF subsectionLine = new RectF();
             subsectionLine.set(lineLeft + originLeft, lineTop, lineLeft + terminusRight, lineBottom);
             canvas.drawRoundRect(subsectionLine, lineCorners, lineCorners, mBackgroundPaint);
@@ -398,11 +398,11 @@ public class SubsectionSeekBar extends View {
      * 如果不是处于被限制坐标内，返回处理后的点坐标
      */
     public int checkProgress(int progress) {
-        for (int i = 0; i < seekBarBeans.size(); i++) {
-            SeekBarBean seekBarBean = seekBarBeans.get(i);
-            if (seekBarBean.isSkip()) {
-                int origin = seekBarBean.getOrigin();
-                int terminus = seekBarBean.getTerminus();
+        for (int i = 0; i < sectionBeans.size(); i++) {
+            SectionBean sectionBean = sectionBeans.get(i);
+            if (sectionBean.isSkip()) {
+                int origin = sectionBean.getOrigin();
+                int terminus = sectionBean.getTerminus();
                 if (origin < progress && progress < terminus) {
                     return terminus + 1;
                 }

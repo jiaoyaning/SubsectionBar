@@ -16,12 +16,13 @@
         <!--进度条高度比例 -->
         <attr name="seekBarHeight" format="dimension" />
 
-        <!--&lt;!&ndash;seekbar line 高度&ndash;&gt;-->
-        <!--<attr name="lineHeight" format="dimension" />-->
-
         <!--导航按钮 颜色-->
         <attr name="seekBarColorNormal" format="color" />
         <attr name="seekBarColorPressed" format="color" />
+
+        <!--导航按钮 颜色-->
+        <attr name="KeyBarColorNormal" format="color" />
+        <attr name="KeyBarColorPressed" format="color" />
 
     </declare-styleable>
 </resources>

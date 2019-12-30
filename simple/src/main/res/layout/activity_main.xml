@@ -69,5 +69,11 @@
         app:max="1000"
         app:seekBarColorNormal="@color/coral"
         app:seekBarColorPressed="@color/orangered"
-        app:seekBarHeight="10dp" />
+        app:seekBarHeight="5dp" />
+
+    <SeekBar
+        android:id="@+id/native_seek_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp" />
 </LinearLayout>
