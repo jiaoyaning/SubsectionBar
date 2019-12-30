@@ -1,41 +1,30 @@
 package com.jyn.subsectionbar;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
 import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.jyn.subsectionprogressbar.ProgressBarBean;
-import com.jyn.subsectionprogressbar.SubsectionProgressBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import com.jyn.subsectionseekbar.SectionBean;
 import com.jyn.subsectionseekbar.SubsectionSeekBar;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 public class MainActivity extends AppCompatActivity {
 
-    private SubsectionProgressBar subsectionProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initProgressBar();
         initSeekBar();
     }
 
-    private void initProgressBar() {
-        subsectionProgressBar = findViewById(R.id.subsectionpb);
-        subsectionProgressBar.setSeekBarBeans(getProgressBarBean());
-    }
 
     private void initSeekBar() {
         SubsectionSeekBar bmpSeekBar = findViewById(R.id.seek_bar_bmp);
@@ -46,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(View view, int progress, boolean fromUser) {
                 seekbarTx.setText("progress: " + progress);
-                subsectionProgressBar.setProgress(progress);
             }
 
             @Override
@@ -110,14 +98,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    public List<ProgressBarBean> getProgressBarBean() {
-        List<ProgressBarBean> progressBarBeans = new ArrayList<>();
-        progressBarBeans.add(new ProgressBarBean(100, 300, Color.parseColor("#00B6D0")));
-        progressBarBeans.add(new ProgressBarBean(400, 700, Color.parseColor("#007196")));
-        progressBarBeans.add(new ProgressBarBean(800, 1000, Color.parseColor("#005672")));
-        return progressBarBeans;
     }
 
     public List<SectionBean> getBmpSeekBars() {

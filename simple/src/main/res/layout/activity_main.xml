@@ -9,16 +9,6 @@
     android:padding="20dp"
     tools:context=".MainActivity">
 
-    <com.jyn.subsectionprogressbar.SubsectionProgressBar
-        android:id="@+id/subsectionpb"
-        android:layout_width="match_parent"
-        android:layout_height="15dp"
-        android:clickable="true"
-        android:focusable="true"
-        app:max="1000"
-        app:progressColor="@color/orangered"
-        app:seekBarHeight="10dp" />
-
     <TextView
         android:id="@+id/seekbar_tx"
         android:layout_width="match_parent"
