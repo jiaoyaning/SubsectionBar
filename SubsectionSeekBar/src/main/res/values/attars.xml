@@ -25,7 +25,7 @@
         <attr name="KeyBarColorPressed" format="color" />
 
         <!--key点高度 -->
-        <attr name="keyBarHeight" format="dimension" />
+        <attr name="keyBarRadius" format="dimension" />
 
     </declare-styleable>
 </resources>

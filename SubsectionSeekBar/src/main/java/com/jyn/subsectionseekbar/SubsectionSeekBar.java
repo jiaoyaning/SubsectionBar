@@ -11,7 +11,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -47,7 +46,9 @@ public class SubsectionSeekBar extends View {
     private int seekBarColorNormal;
     private int seekBarColorPressed;
 
-
+    //key点颜色
+    private int keyBarColorNormal;
+    private int keyBarColorPressed;
     /**
      * 判断是否被点击
      */
@@ -71,7 +72,7 @@ public class SubsectionSeekBar extends View {
      */
     private int seekBarRadius;
 
-    private float keyBarHeight;
+    private float keyBarRadius;
 
 
     // 当前进度百分比
@@ -105,7 +106,7 @@ public class SubsectionSeekBar extends View {
     private SeekBar seekBar = new SeekBar();
 
     // SubsectionSeekBar 监听
-    private onSubsectionSeekBarChangeListener onSubsectionSeekBarChangeListener;
+    private OnSubsectionSeekBarChangeListener onSubsectionSeekBarChangeListener;
 
     //===============参数方法分割线=============================================================
 
@@ -121,13 +122,15 @@ public class SubsectionSeekBar extends View {
         mMax = t.getInt(R.styleable.SubsectionSeekBar_max, 1000);
         seekBarResIdNormal = t.getResourceId(R.styleable.SubsectionSeekBar_seekBarResIdNormal, 0);
         seekBarResIdPressed = t.getResourceId(R.styleable.SubsectionSeekBar_seekBarResIdPressed, 0);
-        backgroundColor = t.getColor(R.styleable.SubsectionSeekBar_backgroundColor, Color.parseColor("#d9d9d9"));
-        progressColor = t.getColor(R.styleable.SubsectionSeekBar_progressColor, Color.parseColor("#00B6D0"));
-        secondaryProgressColor = t.getColor(R.styleable.SubsectionSeekBar_secondaryProgressColor, Color.parseColor("#98F5FF"));
-        seekBarHeight = t.getDimension(R.styleable.SubsectionSeekBar_seekBarHeight, 0f);
-        keyBarHeight = t.getDimension(R.styleable.SubsectionSeekBar_keyBarHeight, 0f);
+        backgroundColor = t.getColor(R.styleable.SubsectionSeekBar_backgroundColor, Color.parseColor("#D7D7D7"));
+        progressColor = t.getColor(R.styleable.SubsectionSeekBar_progressColor, Color.parseColor("#ff30c47f"));
+        secondaryProgressColor = t.getColor(R.styleable.SubsectionSeekBar_secondaryProgressColor, Color.parseColor("#ccffffff"));
+        seekBarHeight = t.getDimension(R.styleable.SubsectionSeekBar_seekBarHeight, 4);
+        keyBarRadius = t.getDimension(R.styleable.SubsectionSeekBar_keyBarRadius, 12);
         seekBarColorNormal = t.getColor(R.styleable.SubsectionSeekBar_seekBarColorNormal, Color.parseColor("#FF7F50"));
         seekBarColorPressed = t.getColor(R.styleable.SubsectionSeekBar_seekBarColorPressed, Color.parseColor("#FF4500"));
+        keyBarColorNormal = t.getColor(R.styleable.SubsectionSeekBar_KeyBarColorNormal, Color.parseColor("#999999"));
+        keyBarColorPressed = t.getColor(R.styleable.SubsectionSeekBar_KeyBarColorPressed, Color.parseColor("#09D198"));
     }
 
     /**
@@ -198,7 +201,7 @@ public class SubsectionSeekBar extends View {
      *
      * @param onSubsectionSeekBarChangeListener 监听
      */
-    public void setOnSubsectionSeekBarChangeListener(onSubsectionSeekBarChangeListener onSubsectionSeekBarChangeListener) {
+    public void setOnSubsectionSeekBarChangeListener(OnSubsectionSeekBarChangeListener onSubsectionSeekBarChangeListener) {
         this.onSubsectionSeekBarChangeListener = onSubsectionSeekBarChangeListener;
     }
 
@@ -239,10 +242,8 @@ public class SubsectionSeekBar extends View {
             seekBarHeight = seekBarHeight / 2;
         }
 
-        if (keyBarHeight > h || keyBarHeight == 0) {
-            keyBarHeight = seekBarRadius;
-        } else {
-            keyBarHeight = keyBarHeight / 2;
+        if (keyBarRadius > h || keyBarRadius == 0) {
+            keyBarRadius = seekBarRadius / 2;
         }
 
         lineTop = seekBarRadius - seekBarHeight;
@@ -265,7 +266,6 @@ public class SubsectionSeekBar extends View {
         mBackgroundPaint.setAntiAlias(true);
 
         mKeyBarPaint.setStyle(Paint.Style.FILL);
-        mKeyBarPaint.setColor(Color.parseColor("#0000FF"));
         mKeyBarPaint.setAntiAlias(true);
 
         drawBackground(canvas);
@@ -293,7 +293,7 @@ public class SubsectionSeekBar extends View {
      * @param canvas 画布
      */
     private void drawBackground(Canvas canvas) {
-        mBackgroundPaint.setColor(Color.parseColor("#d9d9d9"));
+        mBackgroundPaint.setColor(backgroundColor);
         /*
          * rect：RectF对象。
          * rx：x方向上的圆角半径。
@@ -339,8 +339,13 @@ public class SubsectionSeekBar extends View {
      * @param point  key点位置
      */
     private void drawKeyBar(Canvas canvas, int point) {
+        if (point > mProgress) {
+            mKeyBarPaint.setColor(keyBarColorNormal);
+        } else {
+            mKeyBarPaint.setColor(keyBarColorPressed);
+        }
         int offset = (int) (lineWidth * point / mMax); //左边距离
-        canvas.drawCircle(keyBarHeight + offset, seekBarRadius, keyBarHeight, mKeyBarPaint);
+        canvas.drawCircle(lineLeft + offset, seekBarRadius, keyBarRadius, mKeyBarPaint);
     }
 
     /**
@@ -363,7 +368,7 @@ public class SubsectionSeekBar extends View {
     private void drawProgress(Canvas canvas) {
         int progressLineWidth = (int) (lineWidth * percent);
         progressLine.set(lineLeft, lineTop, progressLineWidth + lineLeft, lineBottom);
-        mBackgroundPaint.setColor(Color.parseColor("#00B6D0"));
+        mBackgroundPaint.setColor(progressColor);
         canvas.drawRoundRect(progressLine, lineCorners, lineCorners, mBackgroundPaint);
     }
 
@@ -375,7 +380,6 @@ public class SubsectionSeekBar extends View {
     public boolean onTouchEvent(MotionEvent event) {
         //点击位置坐标 x
         float x = event.getX();
-        Log.i("main", "x:" + x);
         // bar的位置
         if (x <= lineLeft) {
             percent = 0;
@@ -412,14 +416,15 @@ public class SubsectionSeekBar extends View {
                 }
                 break;
             case MotionEvent.ACTION_UP:
+                if (onSubsectionSeekBarChangeListener != null && checkProgress != mProgress) {
+                    onSubsectionSeekBarChangeListener.onStopTrackingTouch(this);
+                }
                 if (checkKeyBar(x)) {
                     return true;
                 }
                 isTouch = false;
-//                this.mProgress = checkProgress;
                 updateSeekBar(this.mProgress);
                 if (onSubsectionSeekBarChangeListener != null && checkProgress != mProgress) {
-                    onSubsectionSeekBarChangeListener.onStopTrackingTouch(this);
                     onSubsectionSeekBarChangeListener.onProgressChanged(this, this.mProgress, true);
                 }
                 break;
@@ -478,10 +483,10 @@ public class SubsectionSeekBar extends View {
 
     public boolean checkKeyBar(float x) {
         for (int i = 0; i < keybars.size(); i++) {
-            int offset = (int) (lineWidth * keybars.get(i) / mMax); //左边距离
-            if (x > offset && x < offset + keyBarHeight * 2) {
+            int offset = (int) (lineLeft + lineWidth * keybars.get(i) / mMax); //key点中心距离
+            if (x > offset - keyBarRadius && x < offset + keyBarRadius) {
                 if (onSubsectionSeekBarChangeListener != null) {
-                    onSubsectionSeekBarChangeListener.onKeyTouch(i, offset + keyBarHeight);
+                    onSubsectionSeekBarChangeListener.onKeyTouch(i, offset);
                 }
                 return true;
             }
@@ -612,35 +617,5 @@ public class SubsectionSeekBar extends View {
             }
             currPercent = percent;
         }
-    }
-
-    /**
-     * SubsectionSeekBar的监听
-     */
-    public interface onSubsectionSeekBarChangeListener {
-        /**
-         * 进度条改变后的监听
-         *
-         * @param view     本view
-         * @param progress 进度
-         * @param fromUser 是否是用户改变
-         */
-        void onProgressChanged(View view, int progress, boolean fromUser);
-
-        /**
-         * 触发开始的点击事件
-         *
-         * @param view 本view
-         */
-        void onStartTrackingTouch(View view);
-
-        /**
-         * 触发结束后的点击事件
-         *
-         * @param view 本view
-         */
-        void onStopTrackingTouch(View view);
-
-        void onKeyTouch(int person, float x);
     }
 }

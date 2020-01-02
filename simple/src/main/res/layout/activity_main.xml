@@ -46,7 +46,7 @@
         android:layout_height="15dp"
         android:clickable="true"
         android:focusable="true"
-        app:keyBarHeight="10dp"
+        app:keyBarRadius="6dp"
         app:max="1000"
         app:seekBarColorNormal="@color/coral"
         app:seekBarColorPressed="@color/orangered"

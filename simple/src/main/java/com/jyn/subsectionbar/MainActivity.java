@@ -2,6 +2,7 @@ package com.jyn.subsectionbar;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.jyn.subsectionseekbar.OnSubsectionSeekBarChangeListener;
 import com.jyn.subsectionseekbar.SectionBean;
 import com.jyn.subsectionseekbar.SubsectionSeekBar;
 
@@ -30,25 +32,9 @@ public class MainActivity extends AppCompatActivity {
         SubsectionSeekBar bmpSeekBar = findViewById(R.id.seek_bar_bmp);
         final TextView seekbarTx = findViewById(R.id.seekbar_tx);
         bmpSeekBar.setProgress(50);
-        bmpSeekBar.setOnSubsectionSeekBarChangeListener(new SubsectionSeekBar.onSubsectionSeekBarChangeListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
+        bmpSeekBar.setOnSubsectionSeekBarChangeListener(new OnSubsectionSeekBarChangeListener() {
             public void onProgressChanged(View view, int progress, boolean fromUser) {
                 seekbarTx.setText("progress: " + progress);
-            }
-
-            @Override
-            public void onStartTrackingTouch(View view) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(View view) {
-
-            }
-
-            @Override
-            public void onKeyTouch(int person, float x) {
             }
         });
 
@@ -60,25 +46,14 @@ public class MainActivity extends AppCompatActivity {
         seekBar.setSectionBeans(getSeekBars());
         seekBar.setKayBars(getKeyBar());
 
-        seekBar.setOnSubsectionSeekBarChangeListener(new SubsectionSeekBar.onSubsectionSeekBarChangeListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
+        seekBar.setOnSubsectionSeekBarChangeListener(new OnSubsectionSeekBarChangeListener() {
             public void onProgressChanged(View view, int progress, boolean fromUser) {
                 seekbarTx2.setText("progress: " + progress);
             }
 
             @Override
-            public void onStartTrackingTouch(View view) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(View view) {
-
-            }
-
-            @Override
             public void onKeyTouch(int person, float x) {
+                Log.i("main", "person: " + person + "; x:" + x);
             }
         });
 
